@@ -12,4 +12,7 @@
     <string name="home">home\n</string>
     <string name="profile">profile\n</string>
     <string name="device">device\n</string>
+    <string name="menu">menu_settings\n</string>
+    <string name="menu_settings">Definitions</string>
+
 </resources>

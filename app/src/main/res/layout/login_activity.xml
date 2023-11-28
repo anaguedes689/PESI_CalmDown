@@ -74,7 +74,7 @@
             android:background="#F44336"
             android:gravity="center"
             android:text="@string/login"
-            android:textColor="white" />
+            android:textColor="#FFFFFF" />
 
         <Button
             android:id="@+id/register"
@@ -84,7 +84,7 @@
             android:background="#F44336"
             android:gravity="center"
             android:text="Register"
-            android:textColor="white" />
+            android:textColor="#FFFFFF" />
 
     </LinearLayout>
 </LinearLayout>
