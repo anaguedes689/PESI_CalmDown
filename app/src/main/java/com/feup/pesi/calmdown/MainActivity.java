@@ -1,37 +1,34 @@
 package com.feup.pesi.calmdown;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.feup.pesi.calmdown.activity.PrimeActivity;
-import com.google.firebase.firestore.FirebaseFirestore;
-
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 public class MainActivity extends AppCompatActivity {
 
-    FirebaseFirestore db;
-
-    private static final int SPLASH_DELAY = 4000; // Tempo de exibição da tela de introdução em milissegundos
+    private Button btnStress, btnHrv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_intro);
+        setContentView(R.layout.activity_main);
 
-        // Initialize Cloud Firestore through Firebase
-        db = FirebaseFirestore.getInstance();
+        btnStress = findViewById(R.id.btnStress);
+        btnHrv = findViewById(R.id.btnHrv);
 
-        new Handler().postDelayed(new Runnable() {
+        btnStress.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-
-                Intent intent = new Intent(MainActivity.this, PrimeActivity.class);
-                startActivity(intent);
-
-                finish();
+            public void onClick(View v) {
+                // Abrir StressActivity
+                Intent stressIntent = new Intent(MainActivity.this, StressActivity.class);
+                startActivity(stressIntent);
             }
-        }, SPLASH_DELAY);
+        });
+
     }
-}
