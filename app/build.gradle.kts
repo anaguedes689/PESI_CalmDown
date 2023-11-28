@@ -44,6 +44,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.7.5")
     implementation("androidx.navigation:navigation-ui:2.7.5")
     implementation("com.google.firebase:firebase-firestore:24.9.1")
+    implementation(files("libs/biolib.sdk.jar"))
     testImplementation("junit:junit:4.13.2")
     implementation("com.google.android.material:material:1.4.0")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
