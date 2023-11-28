@@ -1,0 +1,16 @@
+<!-- res/menu/bottom_navigation_menu.xml -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_home"
+        android:title="Home"
+        android:icon="@drawable/ic_casa" />
+    <item
+        android:id="@+id/action_profile"
+        android:title="Profile"
+        android:icon="@drawable/ic_user" />
+    <item
+        android:id="@+id/action_device"
+        android:title="Device"
+        android:icon="@drawable/ic_jacket" />
+</menu>

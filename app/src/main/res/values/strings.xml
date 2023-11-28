@@ -6,4 +6,7 @@
     <string name="by">by</string>
     <string name="pesi">PESI</string>
     <string name="calmdown">CalmDown</string>
+    <string name="home">home\n</string>
+    <string name="profile">profile\n</string>
+    <string name="device">device\n</string>
 </resources>

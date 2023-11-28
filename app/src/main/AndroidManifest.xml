@@ -15,7 +15,7 @@
         android:theme="@style/Theme.CalmDown"
         tools:targetApi="31">
         <activity
-            android:name=".IntroActivity"
+            android:name=".MainActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -24,7 +24,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.feup.pesi.calmdown.MainActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.DeviceActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.HrActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.PrimeActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.StressActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.UserActivity"/>
+
+
+
+
     </application>
 
 </manifest>

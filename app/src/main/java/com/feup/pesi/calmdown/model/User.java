@@ -8,8 +8,7 @@ public class User {
     String userEmail;
     String password;
     Quizz quizz;
-
-
+    JacketData jacketData;
 
 
 }
