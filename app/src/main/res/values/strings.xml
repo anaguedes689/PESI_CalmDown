@@ -6,4 +6,7 @@
     <string name="by">by</string>
     <string name="pesi">PESI</string>
     <string name="calmdown">CalmDown</string>
+    <string name="password">Password</string>
+    <string name="email">Email</string>
+    <string name="login">Login</string>
 </resources>
