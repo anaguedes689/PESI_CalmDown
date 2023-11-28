@@ -6,39 +6,35 @@ public class User {
     String name;
     Date birthdaydate;
     String userEmail;
-    String password;
     int height;
     int weight;
 
     Quizz quizz;
     JacketData jacketData;
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, Quizz quizz, JacketData jacketData) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, Quizz quizz, JacketData jacketData) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
-        this.password = password;
         this.height = height;
         this.weight = weight;
         this.quizz = quizz;
         this.jacketData = jacketData;
     }
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, Quizz quizz) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, Quizz quizz) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
-        this.password = password;
         this.height = height;
         this.weight = weight;
         this.quizz = quizz;
     }
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
-        this.password = password;
         this.height = height;
         this.weight = weight;
     }
@@ -67,13 +63,6 @@ public class User {
         this.userEmail = userEmail;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     public int getHeight() {
         return height;

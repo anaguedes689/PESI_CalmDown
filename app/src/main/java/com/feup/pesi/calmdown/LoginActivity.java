@@ -1,5 +1,6 @@
 package com.feup.pesi.calmdown;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -8,8 +9,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -23,9 +26,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.login_activity);
+        setContentView(R.layout.activity_login);
 
-        mAuth = FirebaseAuth.getInstance();
+        // Retrieve FirebaseApp instance from the intent
+        String firebaseAppName = getIntent().getStringExtra("firebaseApp");
+        FirebaseApp firebaseApp = FirebaseApp.getInstance(firebaseAppName);
+
+        // Initialize FirebaseAuth using the retrieved FirebaseApp instance
+        mAuth = FirebaseAuth.getInstance(firebaseApp);
 
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
@@ -56,8 +64,10 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Handle registration
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
+
     }
 }

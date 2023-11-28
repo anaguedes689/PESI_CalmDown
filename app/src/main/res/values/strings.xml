@@ -9,6 +9,12 @@
     <string name="password">Password</string>
     <string name="email">Email</string>
     <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="height">Height</string>
+    <string name="weight">Weight</string>
+    <string name="birthdate">Birthdate</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
     <string name="home">home\n</string>
     <string name="profile">profile\n</string>
     <string name="device">device\n</string>

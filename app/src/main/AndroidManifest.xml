@@ -27,10 +27,10 @@
         <activity android:name="com.feup.pesi.calmdown.MainActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.DeviceActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.HrActivity"/>
-        <activity android:name="com.feup.pesi.calmdown.activity.PrimeActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.StressActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.UserActivity"/>
-
+        <activity android:name="com.feup.pesi.calmdown.LoginActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.RegisterActivity"/>
 
 
 
