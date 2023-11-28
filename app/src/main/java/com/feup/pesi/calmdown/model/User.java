@@ -7,6 +7,8 @@ public class User {
     Date birthdaydate;
     String userEmail;
     String password;
+    Quizz quizz;
+
 
 
 
