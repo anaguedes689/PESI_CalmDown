@@ -12,7 +12,7 @@ public class IntroActivity extends AppCompatActivity {
 
     FirebaseFirestore db;
 
-    private static final int SPLASH_DELAY = 4000; // Tempo de exibição da tela de introdução em milissegundos
+    private static final int SPLASH_DELAY = 1000; // Tempo de exibição da tela de introdução em milissegundos
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
