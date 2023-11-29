@@ -32,6 +32,6 @@ public class IntroActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 3000); // 3 seconds delay for demonstration purposes
+        }, 1000); // 3 seconds delay for demonstration purposes
     }
 }

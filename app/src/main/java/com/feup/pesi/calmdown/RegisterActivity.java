@@ -1,6 +1,7 @@
 package com.feup.pesi.calmdown;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -79,7 +80,8 @@ public class RegisterActivity extends AppCompatActivity {
                                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
                                     Toast.makeText(RegisterActivity.this, "Registration successful.",
                                             Toast.LENGTH_SHORT).show();
-                                    // TODO: Start the next activity or do something else
+                                    Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                                    startActivity(intent);
                                 } else {
                                     Toast.makeText(RegisterActivity.this, "Registration failed.",
                                             Toast.LENGTH_SHORT).show();
