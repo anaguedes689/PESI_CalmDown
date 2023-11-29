@@ -68,9 +68,9 @@
 
         <Button
             android:id="@+id/login"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="#F44336"
             android:gravity="center"
             android:text="@string/login"
@@ -78,9 +78,9 @@
 
         <Button
             android:id="@+id/register"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
             android:background="#F44336"
             android:gravity="center"
             android:text="Register"
