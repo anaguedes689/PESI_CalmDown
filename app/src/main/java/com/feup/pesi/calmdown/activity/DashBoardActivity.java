@@ -9,12 +9,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class DashBoardActivity extends AppCompatActivity {
+    private BottomNavigationView bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.dashboard_layout);
+        bottomNavigationView = findViewById(R.id.bottom_navigation);
 
+
+        setUpBottomNavigation();
+    }
+
+    protected void setUpBottomNavigation() {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -23,6 +30,7 @@ public class DashBoardActivity extends AppCompatActivity {
                 return true;
             } else if (itemId == R.id.action_profile) {
                 startActivity(new Intent(DashBoardActivity.this, UserActivity.class));
+
                 return true;
             } else if (itemId == R.id.action_device) {
                 startActivity(new Intent(DashBoardActivity.this, DeviceActivity.class));
@@ -30,5 +38,8 @@ public class DashBoardActivity extends AppCompatActivity {
             }
             return false;
         });
+    }
+    protected void setSelectedItem(int itemId) {
+        bottomNavigationView.setSelectedItemId(itemId);
     }
 }

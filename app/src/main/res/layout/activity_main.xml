@@ -29,4 +29,5 @@
         android:layout_alignParentBottom="true"
         style="@style/Widget.MaterialComponents.BottomNavigationView"
         app:menu="@menu/bottom_navigation_menu" />
+
 </RelativeLayout>

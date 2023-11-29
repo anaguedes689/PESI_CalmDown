@@ -30,5 +30,9 @@ public class MainActivity extends DashBoardActivity {
             }
         });
 
+        setUpBottomNavigation();
+
+
+
     }
 }

@@ -9,22 +9,24 @@ public class User {
     String password;
     int height;
     int weight;
-
+    String sex;
     Quizz quizz;
     JacketData jacketData;
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, Quizz quizz, JacketData jacketData) {
+
+    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, String sex,Quizz quizz, JacketData jacketData) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
         this.password = password;
         this.height = height;
         this.weight = weight;
+        this.sex = sex;
         this.quizz = quizz;
         this.jacketData = jacketData;
     }
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, Quizz quizz) {
+    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, String sex, Quizz quizz) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
@@ -32,15 +34,19 @@ public class User {
         this.height = height;
         this.weight = weight;
         this.quizz = quizz;
+        this.sex = sex;
+
     }
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight) {
+    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, String sex) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
         this.password = password;
         this.height = height;
         this.weight = weight;
+        this.sex = sex;
+
     }
 
     public String getName() {
@@ -89,6 +95,14 @@ public class User {
 
     public void setWeight(int weight) {
         this.weight = weight;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 
     public Quizz getQuizz() {
