@@ -3,17 +3,34 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-<!-- Botão para mostrar nível de stress -->
+    <!-- TextViews to display the user's information -->
+    <TextView
+        android:id="@+id/textViewName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true" />
 
-    <!-- Botão para mostrar nível de HRV -->
+    <TextView
+        android:id="@+id/textViewEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_below="@id/textViewName"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true" />
 
+    <!-- Botão para mostrar nível de stress -->
     <Button
         android:id="@+id/btnStress"
         android:layout_width="280dp"
         android:layout_height="130dp"
+        android:layout_below="@id/textViewEmail"
         android:layout_marginTop="50dp"
         android:text="Nível de Stress" />
 
+    <!-- Botão para mostrar nível de HRV -->
     <Button
         android:id="@+id/btnHrv"
         android:layout_width="280dp"
