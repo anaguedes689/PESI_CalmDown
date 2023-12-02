@@ -71,15 +71,30 @@
             android:inputType="numberSigned"
             android:textSize="20sp" />
 
+        <CheckBox
+            android:id="@+id/maleCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/male"
+            android:textSize="20sp" />
+
+        <CheckBox
+            android:id="@+id/femaleCheckBox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/female"
+            android:textSize="20sp" />
+
+
         <Button
             android:id="@+id/register"
-            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="68dp"
+            android:layout_marginTop="10dp"
             android:background="#F44336"
             android:gravity="center"
             android:text="@string/register"
-            android:textColor="@color/white"/>
+            android:textColor="@color/white" />
     </LinearLayout>
 
 </ScrollView>

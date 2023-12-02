@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -29,8 +30,9 @@ public class RegisterActivity extends AppCompatActivity {
     private EditText birthDateField;
     private EditText weightField;
     private EditText heightField;
+    private CheckBox maleCheckBox;
+    private CheckBox femaleCheckBox;
     private Button registerButton;
-
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -49,8 +51,11 @@ public class RegisterActivity extends AppCompatActivity {
         birthDateField = findViewById(R.id.birth_date);
         weightField = findViewById(R.id.weight);
         heightField = findViewById(R.id.height);
-        registerButton = findViewById(R.id.register);
 
+        maleCheckBox = findViewById(R.id.maleCheckBox);
+        femaleCheckBox = findViewById(R.id.femaleCheckBox);
+
+        registerButton = findViewById(R.id.register);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
                 String password = passwordField.getText().toString();
                 String confirmPassword = confirmPasswordField.getText().toString();
                 String name = nameField.getText().toString();
+                String sex = getSelectedGender();
                 int weight = Integer.parseInt(weightField.getText().toString());
                 int height = Integer.parseInt(heightField.getText().toString());
 
@@ -76,7 +82,7 @@ public class RegisterActivity extends AppCompatActivity {
                     mAuth.createUserWithEmailAndPassword(email, password)
                             .addOnCompleteListener(RegisterActivity.this, task -> {
                                 if (task.isSuccessful()) {
-                                    User user = new User(name, finalBirthDate,email, weight, height);
+                                    User user = new User(name, finalBirthDate,email, weight, height, sex);
                                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
                                     Toast.makeText(RegisterActivity.this, "Registration successful.",
                                             Toast.LENGTH_SHORT).show();
@@ -103,5 +109,15 @@ public class RegisterActivity extends AppCompatActivity {
                 Calendar.getInstance().get(Calendar.MONTH),
                 Calendar.getInstance().get(Calendar.DAY_OF_MONTH));
         datePickerDialog.show();
+    }
+
+    private String getSelectedGender() {
+        if (maleCheckBox.isChecked()) {
+            return "Male";
+        } else if (femaleCheckBox.isChecked()) {
+            return "Female";
+        } else {
+            return ""; // You may want to handle this case based on your app's requirements
+        }
     }
 }

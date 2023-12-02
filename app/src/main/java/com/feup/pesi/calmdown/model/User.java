@@ -6,7 +6,6 @@ public class User {
     String name;
     Date birthdaydate;
     String userEmail;
-    String password;
     int height;
     int weight;
     String sex;
@@ -14,11 +13,10 @@ public class User {
     JacketData jacketData;
 
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, String sex,Quizz quizz, JacketData jacketData) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex,Quizz quizz, JacketData jacketData) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
-        this.password = password;
         this.height = height;
         this.weight = weight;
         this.sex = sex;
@@ -26,11 +24,10 @@ public class User {
         this.jacketData = jacketData;
     }
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, String sex, Quizz quizz) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex, Quizz quizz) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
-        this.password = password;
         this.height = height;
         this.weight = weight;
         this.quizz = quizz;
@@ -38,15 +35,13 @@ public class User {
 
     }
 
-    public User(String name, Date birthdaydate, String userEmail, String password, int height, int weight, String sex) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
-        this.password = password;
         this.height = height;
         this.weight = weight;
         this.sex = sex;
-
     }
 
     public String getName() {
@@ -71,14 +66,6 @@ public class User {
 
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public int getHeight() {

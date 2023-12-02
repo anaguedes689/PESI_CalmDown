@@ -20,5 +20,8 @@
     <string name="device">device\n</string>
     <string name="menu">menu_settings\n</string>
     <string name="menu_settings">Definitions</string>
+    <string name="choose_gender">Choose Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
 
 </resources>
