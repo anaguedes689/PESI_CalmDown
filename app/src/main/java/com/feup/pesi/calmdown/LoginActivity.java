@@ -26,20 +26,28 @@ public class LoginActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        FirebaseApp.initializeApp(this);
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("LoginData", MODE_PRIVATE);
 
         // Retrieve FirebaseApp instance from the intent
         String firebaseAppName = getIntent().getStringExtra("firebaseApp");
-        FirebaseApp firebaseApp = FirebaseApp.getInstance(firebaseAppName);
+        FirebaseApp firebaseApp = null;
 
-        // Initialize FirebaseAuth using the retrieved FirebaseApp instance
+        if (firebaseAppName != null) {
+            firebaseApp = FirebaseApp.getInstance(firebaseAppName);
+        }
+
+// Initialize FirebaseAuth using the retrieved FirebaseApp instance
         mAuth = FirebaseAuth.getInstance(firebaseApp);
+
 
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);

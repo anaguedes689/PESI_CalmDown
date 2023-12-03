@@ -58,7 +58,7 @@ public class UserActivity extends DashBoardActivity {
         heightTextView = findViewById(R.id.heightTextView);
         weightTextView = findViewById(R.id.weightTextView);
 
-        // Carregar e exibir dados do usuário logado
+        // Carregar e exibir dados do usuário logados
         loadAndDisplayUserData(loggedUserId);
 
         // Botão de edição
@@ -67,7 +67,8 @@ public class UserActivity extends DashBoardActivity {
             // Lógica para abrir a tela de edição
             // Você pode usar Intents para abrir uma nova atividade de edição
         });
-        /*Button logoutButton = findViewById(R.id.logoutButton);
+        /*
+        Button logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logoutUser());*/
 
         setUpBottomNavigation();
@@ -140,13 +141,12 @@ public class UserActivity extends DashBoardActivity {
     }
 
 
-    /*
-    private void logoutUser() {
-        FirebaseAuth.getInstance().signOut();
+    /*private void logoutUser() {
+        mAuth.signOut();
         Intent intent = new Intent(UserActivity.this, LoginActivity.class);
+        // Add flags to clear the activity stack and prevent going back to UserActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-    }
-*/
+    }*/
 
 }
