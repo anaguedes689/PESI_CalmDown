@@ -19,7 +19,10 @@ public class IntroActivity extends AppCompatActivity {
         // Initialize FirebaseApp
         FirebaseApp.initializeApp(this);
 
-        // Other code...
+        // Initialize Firebase if not already initialized
+        if (FirebaseApp.getApps(this).isEmpty()) {
+            FirebaseApp.initializeApp(this);
+        }
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
