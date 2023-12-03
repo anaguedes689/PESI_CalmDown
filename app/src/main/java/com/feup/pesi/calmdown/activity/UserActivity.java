@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 
+import com.feup.pesi.calmdown.MainActivity;
 import com.feup.pesi.calmdown.R;
 import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -64,8 +65,15 @@ public class UserActivity extends DashBoardActivity {
         // Botão de edição
         Button editButton = findViewById(R.id.editButton);
         editButton.setOnClickListener(v -> {
-            // Lógica para abrir a tela de edição
-            // Você pode usar Intents para abrir uma nova atividade de edição
+            Intent intent = new Intent(UserActivity.this, EditUserActivity.class);
+            intent.putExtra(loggedUserId, "USER_ID");
+            startActivity(intent);
+        });
+
+        Button editQuizzButton = findViewById(R.id.editQuizzButton);
+        editQuizzButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserActivity.this, QuizzActivity.class);
+            startActivity(intent);
         });
         /*Button logoutButton = findViewById(R.id.logoutButton);
         logoutButton.setOnClickListener(v -> logoutUser());*/

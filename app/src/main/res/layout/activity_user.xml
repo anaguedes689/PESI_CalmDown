@@ -72,13 +72,22 @@
         android:layout_below="@id/weightTextView"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"/>
+    <Button
+        android:id="@+id/editQuizzButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Edit Quizz"
+        android:layout_below="@id/editButton"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"/>
+
 
     <Button
         android:id="@+id/logoutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Logout"
-        android:layout_below="@id/editButton"
+        android:layout_below="@id/editQuizzButton"
         android:layout_marginTop="20dp"
         android:layout_centerHorizontal="true"/>
 

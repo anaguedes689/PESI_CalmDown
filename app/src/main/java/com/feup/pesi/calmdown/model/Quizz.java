@@ -1,17 +1,29 @@
 package com.feup.pesi.calmdown.model;
 
 public class Quizz {
+    private String userId;
     private int userStressLevel;
     private String userRelaxPreference;
     private String userColor;
     private boolean userNotified;
 
     // Construtor
-    public Quizz(int userStressLevel, String userRelaxPreference, String userColor, boolean userNotified) {
+
+
+    public Quizz(String userId, int userStressLevel, String userRelaxPreference, String userColor, boolean userNotified) {
+        this.userId = userId;
         this.userStressLevel = userStressLevel;
         this.userRelaxPreference = userRelaxPreference;
         this.userColor = userColor;
         this.userNotified = userNotified;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
     // Editar

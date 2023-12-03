@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
 
     <application
         android:allowBackup="true"
@@ -31,6 +34,10 @@
         <activity android:name="com.feup.pesi.calmdown.activity.UserActivity"/>
         <activity android:name="com.feup.pesi.calmdown.LoginActivity"/>
         <activity android:name="com.feup.pesi.calmdown.RegisterActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.EditUserActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.QuizzActivity"/>
+
+
 
 
 

@@ -12,8 +12,10 @@ public class User {
     Quizz quizz;
     JacketData jacketData;
 
+    public User() {
+    }
 
-    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex,Quizz quizz, JacketData jacketData) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex, Quizz quizz, JacketData jacketData) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;

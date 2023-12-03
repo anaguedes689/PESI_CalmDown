@@ -38,8 +38,8 @@ public class MainActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 // Abrir StressActivity
-                Intent stressIntent = new Intent(MainActivity.this, StressActivity.class);
-                startActivity(stressIntent);
+                Intent intent = new Intent(MainActivity.this, StressActivity.class);
+                startActivity(intent);
             }
         });
 
