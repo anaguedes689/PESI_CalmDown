@@ -33,7 +33,7 @@ public class DashBoardActivity extends AppCompatActivity {
 
                 return true;
             } else if (itemId == R.id.action_device) {
-                startActivity(new Intent(DashBoardActivity.this, DeviceActivity.class));
+                startActivity(new Intent(DashBoardActivity.this, JacketActivity.class));
                 return true;
             }
             return false;
