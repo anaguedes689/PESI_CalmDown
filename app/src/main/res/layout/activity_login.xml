@@ -90,7 +90,7 @@
 
                 <Button
                     android:id="@+id/register"
-                    android:background=""
+                    android:background="@android:color/transparent"
                     android:text="@string/register"
                     android:textStyle="bold"
                     android:layout_gravity="center_horizontal|center"

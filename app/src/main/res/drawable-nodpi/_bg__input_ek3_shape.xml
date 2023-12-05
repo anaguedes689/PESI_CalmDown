@@ -2,6 +2,5 @@
 <!-- _bg__input_ek3 from your XD file. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
 	android:shape="rectangle" >
-	<solid android:color="@color/welcome_onboard__color" />
 </shape>
 
