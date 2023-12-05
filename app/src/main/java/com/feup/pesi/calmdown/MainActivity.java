@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.feup.pesi.calmdown.activity.DashBoardActivity;
+import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.activity.StressActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -49,7 +50,7 @@ public class MainActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 // Abrir StressActivity
-                Intent intent = new Intent(MainActivity.this, StressActivity.class);
+                Intent intent = new Intent(MainActivity.this, RespirationActivity.class);
                 startActivity(intent);
             }
         });

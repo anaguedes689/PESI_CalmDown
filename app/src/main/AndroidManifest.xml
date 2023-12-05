@@ -36,7 +36,7 @@
         <activity android:name="com.feup.pesi.calmdown.RegisterActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.EditUserActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.QuizzActivity"/>
-
+        <activity android:name="com.feup.pesi.calmdown.activity.RespirationActivity"/>
 
 
 
