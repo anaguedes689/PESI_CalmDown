@@ -1,13 +1,17 @@
 package com.feup.pesi.calmdown.activity;
+
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
 
 import Bio.Library.namespace.BioLib;
+
+import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,13 +21,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+
 import com.feup.pesi.calmdown.R;
-import com.feup.pesi.calmdown.device.SearchDeviceActivity;
 import com.feup.pesi.calmdown.model.JacketData;
 
 // SDK v1.0.07 @MAR15
-public class JacketActivity extends Activity
-{
+public class JacketActivity extends Activity {
     private BioLib lib = null;
 
     private String address = "";
@@ -70,7 +74,7 @@ public class JacketActivity extends Activity
     private BioLib.DataACC dataACC = null;
     private String deviceId = "";
     private String firmwareVersion = "";
-    private byte accSensibility = 1;	// NOTE: 2G= 0, 4G= 1
+    private byte accSensibility = 1;    // NOTE: 2G= 0, 4G= 1
     private byte typeRadioEvent = 0;
     private byte[] infoRadioEvent = null;
     private short countEvent = 0;
@@ -85,8 +89,7 @@ public class JacketActivity extends Activity
 
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 
@@ -115,42 +118,34 @@ public class JacketActivity extends Activity
         textECG = (TextView) findViewById(R.id.lblECG);
         textDeviceId = (TextView) findViewById(R.id.lblDeviceId);
         textRadioEvent = (TextView) findViewById(R.id.textRadioEvent);
-        textTimeSpan  = (TextView) findViewById(R.id.lblTimeSpan);
+        textTimeSpan = (TextView) findViewById(R.id.lblTimeSpan);
 
-        try
-        {
+        try {
             lib = new BioLib(this, mHandler);
             text.append("Init BioLib \n");
-        }
-        catch (Exception e)
-        {
+        } catch (Exception e) {
             text.append("Error to init BioLib \n");
             e.printStackTrace();
         }
 
         buttonConnect = (Button) findViewById(R.id.buttonConnect);
-        buttonConnect.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
+        buttonConnect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 Connect();
             }
 
             /***
              * Connect to device.
              */
-            private void Connect()
-            {
-                try
-                {
-                    deviceToConnect =  lib.mBluetoothAdapter.getRemoteDevice(address);
+            private void Connect() {
+                try {
+                    deviceToConnect = lib.mBluetoothAdapter.getRemoteDevice(address);
 
                     Reset();
 
                     text.setText("");
                     lib.Connect(address, 5);
-                } catch (Exception e)
-                {
+                } catch (Exception e) {
                     text.setText("Error to connect device: " + address);
                     e.printStackTrace();
                 }
@@ -159,104 +154,77 @@ public class JacketActivity extends Activity
         });
 
         buttonDisconnect = (Button) findViewById(R.id.buttonDisconnect);
-        buttonDisconnect.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
+        buttonDisconnect.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 Disconnect();
             }
         });
 
         buttonSetRTC = (Button) findViewById(R.id.buttonSetRTC);
-        buttonSetRTC.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                try
-                {
+        buttonSetRTC.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                try {
                     Date date = new Date();
                     lib.SetRTC(date);
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
         buttonGetRTC = (Button) findViewById(R.id.buttonGetRTC);
-        buttonGetRTC.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                try
-                {
+        buttonGetRTC.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                try {
                     lib.GetRTC();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
         buttonRequest = (Button) findViewById(R.id.buttonRequestData);
-        buttonRequest.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
+        buttonRequest.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 RequestData();
             }
 
-            private void RequestData()
-            {
-                try
-                {
-                    deviceToConnect =  lib.mBluetoothAdapter.getRemoteDevice(address);
+            private void RequestData() {
+                try {
+                    deviceToConnect = lib.mBluetoothAdapter.getRemoteDevice(address);
 
                     Reset();
                     text.setText("");
                     lib.Request(address, 30);
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
         buttonSearch = (Button) findViewById(R.id.buttonSearch);
-        buttonSearch.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
+        buttonSearch.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
                 Search(view);
             }
 
             /*
              * Search for bluetooth devices.
              */
-            private void Search(View view)
-            {
-                try
-                {
+            private void Search(View view) {
+                try {
                     Intent myIntent = new Intent(view.getContext(), SearchDeviceActivity.class);
                     startActivityForResult(myIntent, 0);
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         });
 
         buttonSetLabel = (Button) findViewById(R.id.buttonSetLabel);
-        buttonSetLabel.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                try
-                {
+        buttonSetLabel.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                try {
             		/*
             		// SAMPLE 1: Sample of radio event: send array of bytes (10Bytes maximum)
             		byte type = 1;
@@ -281,49 +249,35 @@ public class JacketActivity extends Activity
                     byte type = 2;
                     String info = "5678";
                     textRadioEvent.setText("Start send");
-                    if (lib.SetStringToRadioEvent(type, info))
-                    {
+                    if (lib.SetStringToRadioEvent(type, info)) {
                         countEvent++;
                         textRadioEvent.setText("REvent: " + countEvent);
-                    }
-                    else
+                    } else
                         textRadioEvent.setText("Error");
 
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
         buttonGetDeviceId = (Button) findViewById(R.id.buttonGetDeviceId);
-        buttonGetDeviceId.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                try
-                {
+        buttonGetDeviceId.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                try {
                     lib.GetDeviceId();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
 
         buttonGetAcc = (Button) findViewById(R.id.buttonGetAcc);
-        buttonGetAcc.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                try
-                {
+        buttonGetAcc.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                try {
                     lib.GetAccSensibility();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -339,20 +293,26 @@ public class JacketActivity extends Activity
         buttonGetAcc.setEnabled(false);
     }
 
-    public void OnDestroy()
-    {
-        if (isConn)
-        {
+    public void OnDestroy() {
+        if (isConn) {
             Disconnect();
         }
     }
 
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
 
-        if (lib.mBluetoothAdapter != null)
-        {
+        if (lib.mBluetoothAdapter != null) {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED) {
+                // TODO: Consider calling
+                //    ActivityCompat#requestPermissions
+                // here to request the missing permissions, and then overriding
+                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                //                                          int[] grantResults)
+                // to handle the case where the user grants the permission. See the documentation
+                // for ActivityCompat#requestPermissions for more details.
+                return;
+            }
             lib.mBluetoothAdapter.cancelDiscovery();
         }
 
