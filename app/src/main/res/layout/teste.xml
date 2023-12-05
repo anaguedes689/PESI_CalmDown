@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ScrollView android:id="@+id/loginactivity"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent" >
+
+    <RelativeLayout android:id="@+id/page_activity_login"
+        android:layout_marginTop="0dp"
+        android:layout_marginStart="0dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/blur"
+            android:layout_width="411dp"
+            android:layout_height="823dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:contentDescription="blur"
+            android:src="@drawable/blur" />
+
+        <TextView android:id="@+id/hello"
+            android:textStyle="bold"
+            android:layout_gravity="center_horizontal|center"
+            android:gravity="center"
+            android:textSize="32sp"
+            android:textColor="@color/text_color"
+            android:layout_marginLeft="-5dp"
+            android:layout_marginTop="180dp"
+            android:layout_width="418.2dp"
+            android:layout_height="39.2dp"
+            android:text="@string/hello" />
+
+        <ImageView android:id="@+id/logo2"
+            android:src="@drawable/logo2"
+            android:contentDescription="logo2"
+            android:layout_marginStart="145dp"
+            android:layout_marginTop="12dp"
+            android:layout_width="122dp"
+            android:layout_height="97dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="366dp"
+            android:layout_marginTop="210dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <EditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/email"
+                android:inputType="textEmailAddress"
+                android:textSize="20sp" />
+
+            <EditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autofillHints=""
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:textSize="20sp" />
+
+            <Button
+                android:id="@+id/login"
+                android:background="@color/orange"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal|center"
+                android:gravity="center"
+                android:textSize="20sp"
+                android:textColor="@color/white"
+                android:layout_marginLeft="-3dp"
+                android:text="@string/login"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="20dp"
+                android:layout_width="271dp"
+                android:layout_height="50dp"
+                />
+
+            <Button
+                android:id="@+id/register"
+                android:background=""
+                android:text="@string/register"
+                android:textStyle="bold"
+                android:layout_gravity="center_horizontal|center"
+                android:gravity="center"
+                android:textSize="13sp"
+                android:textColor="@color/text_color"
+                android:layout_marginLeft="-2dp"
+                android:layout_marginTop="0dp"
+                android:layout_width="416.04dp"
+                android:layout_height="50dp"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    </ScrollView>
+
+</LinearLayout>
