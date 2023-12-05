@@ -9,44 +9,27 @@
 
     <ImageView
         android:id="@+id/imageView"
-        android:layout_width="245dp"
-        android:layout_height="156dp"
+        android:layout_width="162dp"
+        android:layout_height="77dp"
         android:contentDescription="TODO"
-        app:srcCompat="@drawable/pesi_logo" />
+        app:srcCompat="@drawable/logo2" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:text="@string/calmdown"
-        android:textColor="#800000"
+        android:textColor="@color/text_color"
         android:textSize="28sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/by"
-        android:textSize="20sp"
-        android:textColor="#800000"
-        android:gravity="center_vertical" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/pesi"
-        android:textSize="28sp"
-        android:textStyle="bold"
-        android:textColor="#800000"
-        android:gravity="center_vertical" />
-
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp"
+        android:layout_height="366dp"
+        android:layout_gravity="center"
         android:layout_marginTop="20dp"
-        android:layout_gravity="center">
+        android:orientation="vertical"
+        android:padding="16dp">
 
         <EditText
             android:id="@+id/email"
@@ -61,10 +44,10 @@
             android:id="@+id/password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:autofillHints=""
             android:hint="@string/password"
             android:inputType="textPassword"
-            android:textSize="20sp"
-            android:autofillHints="" />
+            android:textSize="20sp" />
 
         <Button
             android:id="@+id/login"
@@ -81,10 +64,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:background="#F44336"
+            android:background="@color/white"
             android:gravity="center"
-            android:text="Register"
-            android:textColor="#FFFFFF" />
+            android:text="@string/register"
+            android:textColor="@color/text_color" />
 
     </LinearLayout>
 </LinearLayout>
