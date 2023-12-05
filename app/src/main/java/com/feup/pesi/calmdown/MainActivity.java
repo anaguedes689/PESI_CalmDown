@@ -50,7 +50,7 @@ public class MainActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 // Abrir StressActivity
-                Intent intent = new Intent(MainActivity.this, RespirationActivity.class);
+                Intent intent = new Intent(MainActivity.this, StressActivity.class);
                 startActivity(intent);
             }
         });
