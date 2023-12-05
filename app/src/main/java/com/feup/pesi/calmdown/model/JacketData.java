@@ -18,18 +18,12 @@ public class JacketData {
     private byte accSensibility;
     private byte typeRadioEvent;
     private byte[] infoRadioEvent;
-    private short countEvent;
-
     private byte[][] ecg;
     private int nBytes;
+    private BioLib.QRS qrs;
 
 
-    public void processBioLibOutput(int batteryLevel, int pulse, Date dateTimePushButton,
-                                    Date dateTimeRTC, Date dateTimeTimeSpan, int sdCardState,
-                                    int numOfPushButton, BioLib.DataACC dataACC, String deviceId,
-                                    String firmwareVersion, byte accSensibility, byte typeRadioEvent,
-                                    byte[] infoRadioEvent, short countEvent, byte[][] ecg, int nBytes) {
-
+    public JacketData(int batteryLevel, int pulse, Date dateTimePushButton, Date dateTimeRTC, Date dateTimeTimeSpan, int sdCardState, int numOfPushButton, BioLib.DataACC dataACC, String deviceId, String firmwareVersion, byte accSensibility, byte typeRadioEvent, byte[] infoRadioEvent, short countEvent, byte[][] ecg, int nBytes, BioLib.QRS qrs) {
         this.batteryLevel = batteryLevel;
         this.pulse = pulse;
         this.dateTimePushButton = dateTimePushButton;
@@ -43,11 +37,17 @@ public class JacketData {
         this.accSensibility = accSensibility;
         this.typeRadioEvent = typeRadioEvent;
         this.infoRadioEvent = infoRadioEvent;
-        this.countEvent = countEvent;
         this.ecg = ecg;
         this.nBytes = nBytes;
+        this.qrs = qrs;
+    }
 
-        // Adicione outras operações de processamento conforme necessário
+    public BioLib.QRS getQrs() {
+        return qrs;
+    }
+
+    public void setQrs(BioLib.QRS qrs) {
+        this.qrs = qrs;
     }
 
     // Métodos de acesso para obter os valores dos atributos
@@ -103,9 +103,7 @@ public class JacketData {
         return infoRadioEvent;
     }
 
-    public short getCountEvent() {
-        return countEvent;
-    }
+
 
     public byte[][] getEcg() {
         return ecg;
@@ -113,5 +111,66 @@ public class JacketData {
 
     public int getnBytes() {
         return nBytes;
+    }
+
+    public void setBatteryLevel(int batteryLevel) {
+        this.batteryLevel = batteryLevel;
+    }
+
+    public void setPulse(int pulse) {
+        this.pulse = pulse;
+    }
+
+    public void setDateTimePushButton(Date dateTimePushButton) {
+        this.dateTimePushButton = dateTimePushButton;
+    }
+
+    public void setDateTimeRTC(Date dateTimeRTC) {
+        this.dateTimeRTC = dateTimeRTC;
+    }
+
+    public void setDateTimeTimeSpan(Date dateTimeTimeSpan) {
+        this.dateTimeTimeSpan = dateTimeTimeSpan;
+    }
+
+    public void setSdCardState(int sdCardState) {
+        this.sdCardState = sdCardState;
+    }
+
+    public void setNumOfPushButton(int numOfPushButton) {
+        this.numOfPushButton = numOfPushButton;
+    }
+
+    public void setDataACC(BioLib.DataACC dataACC) {
+        this.dataACC = dataACC;
+    }
+
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
+    }
+
+    public void setFirmwareVersion(String firmwareVersion) {
+        this.firmwareVersion = firmwareVersion;
+    }
+
+    public void setAccSensibility(byte accSensibility) {
+        this.accSensibility = accSensibility;
+    }
+
+    public void setTypeRadioEvent(byte typeRadioEvent) {
+        this.typeRadioEvent = typeRadioEvent;
+    }
+
+    public void setInfoRadioEvent(byte[] infoRadioEvent) {
+        this.infoRadioEvent = infoRadioEvent;
+    }
+
+
+    public void setEcg(byte[][] ecg) {
+        this.ecg = ecg;
+    }
+
+    public void setnBytes(int nBytes) {
+        this.nBytes = nBytes;
     }
 }
