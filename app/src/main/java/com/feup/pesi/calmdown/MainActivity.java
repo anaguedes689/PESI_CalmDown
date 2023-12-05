@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.feup.pesi.calmdown.activity.DashBoardActivity;
+import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.activity.StressActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;

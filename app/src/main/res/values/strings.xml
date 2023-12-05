@@ -23,5 +23,6 @@
     <string name="choose_gender">Choose Gender</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
+    <string name="controled_respiration">Controled Respiration</string>
 
 </resources>
