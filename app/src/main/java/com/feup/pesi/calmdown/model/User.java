@@ -1,5 +1,6 @@
 package com.feup.pesi.calmdown.model;
 
+import java.util.Calendar;
 import java.util.Date;
 
 public class User {
@@ -104,6 +105,24 @@ public class User {
 
     public JacketData getJacketData() {
         return jacketData;
+    }
+
+    public int getAge() {
+        if (this.birthdaydate == null) {
+            return 0;
+        }
+
+        Calendar today = Calendar.getInstance();
+        Calendar birthCalendar = Calendar.getInstance();
+        birthCalendar.setTime(this.birthdaydate);
+
+        int age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+
+        return age;
     }
 
     public void setJacketData(JacketData jacketData) {
