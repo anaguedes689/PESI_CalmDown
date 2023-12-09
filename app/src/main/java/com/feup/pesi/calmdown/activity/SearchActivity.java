@@ -1,10 +1,10 @@
 package com.feup.pesi.calmdown.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.feup.pesi.calmdown.R;
@@ -21,8 +22,7 @@ import com.feup.pesi.calmdown.R;
 import java.util.ArrayList;
 import java.util.Set;
 
-
-public class SearchDeviceActivity extends Activity {
+public class SearchActivity extends AppCompatActivity {
     public static String SELECT_DEVICE_ADDRESS = "device_address";
     public static final int CHANGE_MACADDRESS = 100;
     private ListView mainListView;
@@ -31,11 +31,6 @@ public class SearchDeviceActivity extends Activity {
     private BluetoothAdapter mBluetoothAdapter = null;
     private Button buttonOK;
 
-
-    /**
-     *
-     * @return
-     */
     public String GetMacAddress() {
         return selectedValue;
     }
@@ -46,25 +41,12 @@ public class SearchDeviceActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
 
-        buttonOK = (Button) findViewById(R.id.cmdOK);
-        buttonOK.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra(SELECT_DEVICE_ADDRESS, selectedValue);
-
-                // Set result and finish this Activity
-                setResult(CHANGE_MACADDRESS, intent);
-                finish();
-            }
-
-        });
-
         try {
             mainListView = (ListView) findViewById(R.id.lstDevices);
 
             ArrayList<String> lstDevices = new ArrayList<String>();
 
-            // Create ArrayAdapter using the planet list.  
+            // Create ArrayAdapter using the planet list.
             listAdapter = new ArrayAdapter<String>(this, R.layout.simplerow, lstDevices);
 
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -82,38 +64,46 @@ public class SearchDeviceActivity extends Activity {
                         return;
                     }
                     Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
-	    		    for (BluetoothDevice device : devices) 
-	    		    {
-	    		    	listAdapter.add(device.getAddress() + "   " + device.getName());
-	    		    }
-				}
-			}
-			mainListView.setAdapter( listAdapter );
-            
-            mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener() 
-            {  
-                @Override  
-                public void onItemClick( AdapterView<?> parent, View item, int position, long id) 
-                {  
-                	selectedValue = (String) listAdapter.getItem(position);
-            		
-                	String[] aux = selectedValue.split("   ");
-                	selectedValue = aux[0];
-                }  
-            });  
+                    for (BluetoothDevice device : devices)
+                    {
+                        listAdapter.add(device.getAddress() + "   " + device.getName());
+                    }
+                }
+            }
+            mainListView.setAdapter( listAdapter );
+
+            mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick( AdapterView<?> parent, View item, int position, long id)
+                {
+                    selectedValue = (String) listAdapter.getItem(position);
+
+                    String[] aux = selectedValue.split("   ");
+                    selectedValue = aux[0];
+                    SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("selectedValue", selectedValue);
+                    editor.apply();
+                    Intent intent = new Intent();
+                    intent.putExtra(SELECT_DEVICE_ADDRESS, selectedValue);
+                    setResult(CHANGE_MACADDRESS, intent);
+                    finish();
+                }
+            });
         }
         catch (Exception ex)
         {
-        	
+
         }
-        
+
     }
-    
+
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) 
+    public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.activity_search_device, menu);
         return true;
     }
-    
+
 }

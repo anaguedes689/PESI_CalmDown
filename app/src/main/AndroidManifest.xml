@@ -20,6 +20,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CalmDown"
         tools:targetApi="31">
+        <service
+            android:name=".service.BluetoothService"
+            android:enabled="true"
+            android:exported="false" />
         <activity
             android:name=".IntroActivity"
             android:exported="true"
@@ -31,7 +35,6 @@
             </intent-filter>
         </activity>
         <activity android:name="com.feup.pesi.calmdown.MainActivity"/>
-        <activity android:name="com.feup.pesi.calmdown.activity.JacketActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.HrActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.StressActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.UserActivity"/>
@@ -40,7 +43,13 @@
         <activity android:name="com.feup.pesi.calmdown.activity.EditUserActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.QuizzActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.RespirationActivity"/>
-        <activity android:name="com.feup.pesi.calmdown.activity.SearchDeviceActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.DeviceActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.SearchActivity"/>
+
+
+
+
+
 
 
 
