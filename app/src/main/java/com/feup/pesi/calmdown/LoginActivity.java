@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize SharedPreferences
         sharedPreferences = getSharedPreferences("LoginData", MODE_PRIVATE);
 
+
         // Retrieve FirebaseApp instance from the intent
         String firebaseAppName = getIntent().getStringExtra("firebaseApp");
         FirebaseApp firebaseApp = null;

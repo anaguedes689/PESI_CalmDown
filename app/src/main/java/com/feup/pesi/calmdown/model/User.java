@@ -1,6 +1,9 @@
 package com.feup.pesi.calmdown.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+
+import Bio.Library.namespace.BioLib;
 
 public class User {
     String name;
@@ -10,21 +13,12 @@ public class User {
     int weight;
     String sex;
     Quizz quizz;
-    JacketData jacketData;
+
+    ArrayList<Date> dateTimeTimeSpan;
 
     public User() {
     }
 
-    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex, Quizz quizz, JacketData jacketData) {
-        this.name = name;
-        this.birthdaydate = birthdaydate;
-        this.userEmail = userEmail;
-        this.height = height;
-        this.weight = weight;
-        this.sex = sex;
-        this.quizz = quizz;
-        this.jacketData = jacketData;
-    }
 
     public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex, Quizz quizz) {
         this.name = name;
@@ -44,6 +38,15 @@ public class User {
         this.height = height;
         this.weight = weight;
         this.sex = sex;
+    }
+
+
+    public ArrayList<Date> getDateTimeTimeSpan() {
+        return dateTimeTimeSpan;
+    }
+
+    public void setDateTimeTimeSpan(ArrayList<Date> dateTimeTimeSpan) {
+        this.dateTimeTimeSpan = dateTimeTimeSpan;
     }
 
     public String getName() {
@@ -102,11 +105,10 @@ public class User {
         this.quizz = quizz;
     }
 
-    public JacketData getJacketData() {
-        return jacketData;
-    }
 
-    public void setJacketData(JacketData jacketData) {
-        this.jacketData = jacketData;
+
+
+    public void insertqrs(){
+
     }
 }

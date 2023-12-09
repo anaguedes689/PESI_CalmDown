@@ -4,6 +4,7 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +22,7 @@ import com.feup.pesi.calmdown.R;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class BluetoothActivity extends AppCompatActivity {
+public class SearchActivity extends AppCompatActivity {
     public static String SELECT_DEVICE_ADDRESS = "device_address";
     public static final int CHANGE_MACADDRESS = 100;
     private ListView mainListView;
@@ -39,19 +40,6 @@ public class BluetoothActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
-
-        buttonOK = (Button) findViewById(R.id.cmdOK);
-        buttonOK.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent intent = new Intent();
-                intent.putExtra(SELECT_DEVICE_ADDRESS, selectedValue);
-
-                // Set result and finish this Activity
-                setResult(CHANGE_MACADDRESS, intent);
-                finish();
-            }
-
-        });
 
         try {
             mainListView = (ListView) findViewById(R.id.lstDevices);
@@ -93,6 +81,14 @@ public class BluetoothActivity extends AppCompatActivity {
 
                     String[] aux = selectedValue.split("   ");
                     selectedValue = aux[0];
+                    SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.putString("selectedValue", selectedValue);
+                    editor.apply();
+                    Intent intent = new Intent();
+                    intent.putExtra(SELECT_DEVICE_ADDRESS, selectedValue);
+                    setResult(CHANGE_MACADDRESS, intent);
+                    finish();
                 }
             });
         }
@@ -110,7 +106,4 @@ public class BluetoothActivity extends AppCompatActivity {
         return true;
     }
 
-    public void receiveData(){
-
-    }
 }

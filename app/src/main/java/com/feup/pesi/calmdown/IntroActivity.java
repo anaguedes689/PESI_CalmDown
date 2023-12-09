@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.FirebaseApp;
 
 
@@ -23,6 +24,7 @@ public class IntroActivity extends AppCompatActivity {
         if (FirebaseApp.getApps(this).isEmpty()) {
             FirebaseApp.initializeApp(this);
         }
+
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
