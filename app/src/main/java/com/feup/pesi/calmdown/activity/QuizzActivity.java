@@ -30,15 +30,28 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.feup.pesi.calmdown.R;
 import com.feup.pesi.calmdown.model.Quizz;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 
 public class QuizzActivity extends AppCompatActivity {
 
+
+    private static final String USERS_COLLECTION = "users";
+    private static final String QUESTIONNAIRES_COLLECTION = "quizzes";
+
+
     private SeekBar seekBarStressLevel;
     private RadioGroup radioGroupRelaxPreference;
     private ImageView colorOption1, colorOption2, colorOption3, colorOption4, colorDisplay;
     private Switch switchNotification;
+
+    private Button submitButton;
     TextView textViewSelectedValue;
     private static final int PERMISSION_REQUEST_CODE = 123;
 
@@ -127,6 +140,8 @@ public class QuizzActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Quizz quizz = new Quizz();
                 int stressLevel = seekBarStressLevel.getProgress();
 
                 // Get selected radio button
@@ -135,18 +150,78 @@ public class QuizzActivity extends AppCompatActivity {
                 String relaxPreference = selectedRadioButton.getText().toString();
                 boolean notificationPreference = switchNotification.isChecked();
 
-
-
                 // Create a Quizz object with the collected data
-                Quizz quizz = new Quizz("user_id_placeholder", stressLevel, relaxPreference, colorToHexString(selectedColor), notificationPreference);
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+
+                // Verificar se o usuário está autenticado
+                if (currentUser != null) {
+                    String userID = currentUser.getUid();
+                    quizz = new Quizz(userID, stressLevel, relaxPreference, colorToHexString(selectedColor), notificationPreference);
+                }
 
                 // Display quizz information (for testing purposes)
                 quizz.displayQuizzInfo();
 
                 // You can save the Quizz object to Firebase or perform other actions here
+                addQuizzToGlobalCollection(quizz);
+                addQuizzToUserDocument(quizz);
+
             }
         });
     }
+    // Método para adicionar o ID do questionário ao documento do usuário
+// Método para adicionar o ID do questionário ao documento do usuário
+    private void addQuizzToUserDocument(Quizz quizz) {
+        // Obter o usuário atualmente autenticado
+        String userID = quizz.getUserId();
+
+        // Verificar se o usuário está autenticado
+        if (userID != null) {
+            // Adicionar o questionário à coleção de questionários no documento do usuário
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            CollectionReference userQuestionnairesCollection = db.collection(USERS_COLLECTION)
+                    .document(userID)
+                    .collection("quizzes");
+
+            userQuestionnairesCollection.add(quizz)
+                    .addOnSuccessListener(documentReference -> {
+                        // Atualizar o ID do Quizz após a adição bem-sucedida
+                        String quizzID = documentReference.getId();
+                        quizz.setId(quizzID);
+
+                        // Substituir o array de questionários no documento do usuário pelo novo array contendo apenas o ID mais recente
+                        DocumentReference userDocRef = db.collection(USERS_COLLECTION).document(userID);
+                        userDocRef.update("quizz", Arrays.asList(quizzID))
+                                .addOnFailureListener(e -> {
+                                    // Lidar com falha ao atualizar o array no documento do usuário
+                                    Log.e("Firestore", "Erro ao substituir o array de questionários no documento do usuário", e);
+                                });
+                    })
+                    .addOnFailureListener(e -> {
+                        // Lidar com falha na adição à coleção do usuário
+                        Log.e("Firestore", "Erro ao adicionar o Quizz à coleção de questionários do usuário", e);
+                    });
+        } else {
+            // O usuário não está autenticado. Trate conforme necessário.
+            Log.e("Firestore", "Usuário não autenticado.");
+        }
+    }
+
+    // Método para adicionar uma cópia do questionário à coleção global de questionários
+    private void addQuizzToGlobalCollection(Quizz quizz) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference questionnairesCollection = db.collection(QUESTIONNAIRES_COLLECTION);
+
+        questionnairesCollection.add(quizz)
+                .addOnFailureListener(e -> {
+                    // Lidar com falha na adição à coleção global
+                    Log.e("Firestore", "Erro ao adicionar o Quizz à coleção global de questionários", e);
+                });
+    }
+
+
+
+
 
     private void requestNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -1,6 +1,7 @@
 package com.feup.pesi.calmdown.model;
 
 public class Quizz {
+    private String id;
     private String userId;
     private int userStressLevel;
     private String userRelaxPreference;
@@ -9,6 +10,17 @@ public class Quizz {
 
     // Construtor
 
+    public Quizz() {
+        // Construtor padrão necessário para Firestore
+    }
+    // Getter e Setter para o ID
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public Quizz(String userId, int userStressLevel, String userRelaxPreference, String userColor, boolean userNotified) {
         this.userId = userId;
