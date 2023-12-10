@@ -22,5 +22,16 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="controled_respiration">Controled Respiration</string>
+    <string name="select_variable_prompt">Selecione a Variável</string>
+    <string name="select_data_type_prompt">Selecione o Tipo de Dados</string>
+    <string name="prev_day">Dia Anterior</string>
+    <string name="next_day">Próximo Dia</string>
+    <string-array name="variable_options">
+        <item>Pulse</item>
+        <item>RR</item>
+        <item>bpm</item>
+        <item>bpmi</item>
+        <!-- Adicione outros itens conforme necessário -->
+    </string-array>
 
 </resources>

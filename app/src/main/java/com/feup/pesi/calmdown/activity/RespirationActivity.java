@@ -12,6 +12,7 @@ public class RespirationActivity extends DashBoardActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_respiration);
+        setUpBottomNavigation();
 
         ImageView imageView = findViewById(R.id.gifImageView);
         Glide.with(this)

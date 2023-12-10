@@ -31,6 +31,14 @@
         android:layout_marginTop="52dp"
         android:text="Nível de HRV" />
 
+    <Button
+        android:id="@+id/btnStats"
+        android:layout_width="280dp"
+        android:layout_height="130dp"
+        android:layout_below="@id/btnHrv"
+        android:layout_marginTop="52dp"
+        android:text="Stats" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
         android:layout_width="match_parent"

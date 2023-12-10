@@ -5,6 +5,9 @@ plugins {
 }
 
 
+
+
+
 android {
     namespace = "com.feup.pesi.calmdown"
     compileSdk = 34
@@ -41,6 +44,8 @@ android {
 
 }
 
+
+
 dependencies {
 
     implementation("androidx.appcompat:appcompat:1.6.1")
@@ -51,6 +56,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.7.5")
     implementation("androidx.navigation:navigation-ui:2.7.5")
     implementation("com.google.firebase:firebase-firestore:24.9.1")
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     implementation(files("libs/biolib.sdk.jar"))
     implementation("androidx.core:core-ktx:1.12.0")
     testImplementation("junit:junit:4.13.2")

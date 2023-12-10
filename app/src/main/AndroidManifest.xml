@@ -45,12 +45,7 @@
         <activity android:name="com.feup.pesi.calmdown.activity.RespirationActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.DeviceActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.SearchActivity"/>
-
-
-
-
-
-
+        <activity android:name="com.feup.pesi.calmdown.activity.StatsActivity"/>
 
 
     </application>
