@@ -19,7 +19,7 @@ import com.feup.pesi.calmdown.service.BluetoothService;
 
 import Bio.Library.namespace.BioLib;
 
-public class DeviceActivity extends AppCompatActivity {
+public class DeviceActivity extends DashBoardActivity {
     private BioLib lib;
 
     private String address = "";
@@ -29,11 +29,13 @@ public class DeviceActivity extends AppCompatActivity {
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test);
+        setContentView(R.layout.activity_device);
         Intent serviceIntent = new Intent(this, BluetoothService.class);
         startService(serviceIntent);
         Intent intent = new Intent(this, BluetoothService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        setUpBottomNavigation();
+
         // Recupera o endereço MAC da última conexão
         address = Reccuperateadress();
 
