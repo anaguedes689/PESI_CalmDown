@@ -4,6 +4,7 @@
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="hello">Hello Again!</string>
+    <string name="hrv">HRV Value</string>
     <string name="password">Enter password</string>
     <string name="email">Enter email</string>
     <string name="login">Login</string>
