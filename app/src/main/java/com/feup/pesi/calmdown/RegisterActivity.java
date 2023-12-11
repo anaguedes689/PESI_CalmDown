@@ -93,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
                                     Toast.makeText(RegisterActivity.this, "Registration successful.",
                                             Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(RegisterActivity.this, QuizzActivity.class);
+                                    Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(RegisterActivity.this, "Registration failed.",

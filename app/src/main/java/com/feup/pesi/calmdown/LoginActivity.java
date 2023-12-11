@@ -10,9 +10,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.feup.pesi.calmdown.activity.QuizzActivity;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -68,13 +71,29 @@ public class LoginActivity extends AppCompatActivity {
                                 editor.apply();
 
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                Toast.makeText(LoginActivity.this, "Authentication successful.",
-                                        Toast.LENGTH_SHORT).show();
+                                if (user != null) {
+                                    Toast.makeText(LoginActivity.this, "Authentication successful.",
+                                            Toast.LENGTH_SHORT).show();
+                                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                    String userId = user.getUid(); // Get the UID of the current user
+                                    CollectionReference quizzesCollection = db.collection("quizzes"); // Assuming the collection name is "quizzes"
+                                    quizzesCollection.whereEqualTo("userId", userId).get().addOnCompleteListener(task1 -> {
+                                        if (task1.isSuccessful()) {
+                                            if (task1.getResult().isEmpty()) {
+                                                // If the user has not yet completed the quiz, redirect to QuizzActivity
+                                                Intent intent = new Intent(LoginActivity.this, QuizzActivity.class);
+                                                startActivity(intent);
+                                            } else {
+                                                // If the user has already completed the quiz, redirect to MainActivity
+                                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                                                intent.putExtra("Email", email);  // Send email to MainActivity
+                                                startActivity(intent);
+                                            }
+                                        }
+                                    });
 
-                                // Start MainActivity
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                intent.putExtra("Email", email);  // Send email to MainActivity
-                                startActivity(intent);
+                                }
+
                             } else {
                                 Toast.makeText(LoginActivity.this, "Authentication failed.",
                                         Toast.LENGTH_SHORT).show();

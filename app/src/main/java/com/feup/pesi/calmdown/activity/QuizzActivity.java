@@ -29,6 +29,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
 import com.feup.pesi.calmdown.LoginActivity;
+import com.feup.pesi.calmdown.MainActivity;
 import com.feup.pesi.calmdown.R;
 import com.feup.pesi.calmdown.RegisterActivity;
 import com.feup.pesi.calmdown.model.Quizz;
@@ -163,7 +164,7 @@ public class QuizzActivity extends DashBoardActivity {
 
                 addQuizzToGlobalCollection(quizz);
 
-                Intent intent = new Intent(QuizzActivity.this, LoginActivity.class);
+                Intent intent = new Intent(QuizzActivity.this, MainActivity.class);
                 startActivity(intent);
 
                 // Display quizz information (for testing purposes)

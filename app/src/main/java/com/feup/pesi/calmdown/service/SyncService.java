@@ -184,6 +184,5 @@ public class SyncService extends JobIntentService {
     }
 
 
-
 }
 
