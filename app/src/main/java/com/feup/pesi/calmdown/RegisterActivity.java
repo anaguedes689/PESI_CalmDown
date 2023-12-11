@@ -2,6 +2,7 @@ package com.feup.pesi.calmdown;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.feup.pesi.calmdown.R;
+import com.feup.pesi.calmdown.activity.QuizzActivity;
 import com.feup.pesi.calmdown.model.Quizz;
 import com.feup.pesi.calmdown.model.User;
 import com.google.firebase.auth.FirebaseAuth;
@@ -37,6 +39,8 @@ public class RegisterActivity extends AppCompatActivity {
     private Button loginButton;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,7 @@ public class RegisterActivity extends AppCompatActivity {
                                     db.collection("users").document(mAuth.getCurrentUser().getUid()).set(user);
                                     Toast.makeText(RegisterActivity.this, "Registration successful.",
                                             Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(RegisterActivity.this, Quizz.class);
+                                    Intent intent = new Intent(RegisterActivity.this, QuizzActivity.class);
                                     startActivity(intent);
                                 } else {
                                     Toast.makeText(RegisterActivity.this, "Registration failed.",

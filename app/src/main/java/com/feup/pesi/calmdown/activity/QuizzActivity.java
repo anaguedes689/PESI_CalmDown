@@ -36,6 +36,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
 import java.util.Arrays;
 
@@ -45,7 +46,6 @@ public class QuizzActivity extends DashBoardActivity {
     private static final String USERS_COLLECTION = "users";
     private static final String QUESTIONNAIRES_COLLECTION = "quizzes";
 
-
     private SeekBar seekBarStressLevel;
     private RadioGroup radioGroupRelaxPreference;
     private ImageView colorOption1, colorOption2, colorOption3, colorOption4, colorDisplay;
@@ -54,7 +54,6 @@ public class QuizzActivity extends DashBoardActivity {
     private Button submitButton;
     TextView textViewSelectedValue;
     private static final int PERMISSION_REQUEST_CODE = 123;
-
 
     private int selectedColor = Color.BLUE;
 
@@ -160,53 +159,30 @@ public class QuizzActivity extends DashBoardActivity {
                     quizz = new Quizz(userID, stressLevel, relaxPreference, colorToHexString(selectedColor), notificationPreference);
                 }
 
+                addQuizzToGlobalCollection(quizz);
+
                 // Display quizz information (for testing purposes)
                 quizz.displayQuizzInfo();
-
-                // You can save the Quizz object to Firebase or perform other actions here
-                addQuizzToGlobalCollection(quizz);
-                addQuizzToUserDocument(quizz);
 
             }
         });
     }
-    // Método para adicionar o ID do questionário ao documento do usuário
-// Método para adicionar o ID do questionário ao documento do usuário
-    private void addQuizzToUserDocument(Quizz quizz) {
-        // Obter o usuário atualmente autenticado
-        String userID = quizz.getUserId();
 
+    private void addQuizzToUserDocument(String quizz, String userID) {
         // Verificar se o usuário está autenticado
         if (userID != null) {
-            // Adicionar o questionário à coleção de questionários no documento do usuário
             FirebaseFirestore db = FirebaseFirestore.getInstance();
-            CollectionReference userQuestionnairesCollection = db.collection(USERS_COLLECTION)
-                    .document(userID)
-                    .collection("quizzes");
+            DocumentReference userDocRef = db.collection("users").document(userID);
 
-            userQuestionnairesCollection.add(quizz)
-                    .addOnSuccessListener(documentReference -> {
-                        // Atualizar o ID do Quizz após a adição bem-sucedida
-                        String quizzID = documentReference.getId();
-                        quizz.setId(quizzID);
-
-                        // Substituir o array de questionários no documento do usuário pelo novo array contendo apenas o ID mais recente
-                        DocumentReference userDocRef = db.collection(USERS_COLLECTION).document(userID);
-                        userDocRef.update("quizz", Arrays.asList(quizzID))
-                                .addOnFailureListener(e -> {
-                                    // Lidar com falha ao atualizar o array no documento do usuário
-                                    Log.e("Firestore", "Erro ao substituir o array de questionários no documento do usuário", e);
-                                });
-                    })
-                    .addOnFailureListener(e -> {
-                        // Lidar com falha na adição à coleção do usuário
-                        Log.e("Firestore", "Erro ao adicionar o Quizz à coleção de questionários do usuário", e);
-                    });
+            userDocRef.update("quizz", quizz)
+                    .addOnSuccessListener(aVoid -> Log.d("Firestore", "ID do quizz adicionado ao usuário com sucesso"))
+                    .addOnFailureListener(e -> Log.e("Firestore", "Erro ao adicionar ID do quizz ao usuário: " + e.getMessage()));
         } else {
             // O usuário não está autenticado. Trate conforme necessário.
             Log.e("Firestore", "Usuário não autenticado.");
         }
     }
+
 
     // Método para adicionar uma cópia do questionário à coleção global de questionários
     private void addQuizzToGlobalCollection(Quizz quizz) {
@@ -214,13 +190,22 @@ public class QuizzActivity extends DashBoardActivity {
         CollectionReference questionnairesCollection = db.collection(QUESTIONNAIRES_COLLECTION);
 
         questionnairesCollection.add(quizz)
+                .addOnSuccessListener(documentReference -> {
+                    // Documento adicionado com sucesso, aqui está o ID do documento
+                    String documentId = documentReference.getId();
+
+                    String userID = quizz.getUserId();
+
+                    addQuizzToUserDocument(documentId,userID);
+
+                    Log.d("Firestore", "Documento adicionado com ID: " + documentId);
+                    // Faça o que for necessário com o ID do documento
+                })
                 .addOnFailureListener(e -> {
                     // Lidar com falha na adição à coleção global
                     Log.e("Firestore", "Erro ao adicionar o Quizz à coleção global de questionários", e);
                 });
     }
-
-
 
 
 

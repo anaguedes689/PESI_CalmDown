@@ -13,7 +13,7 @@ public class User {
     int height;
     int weight;
     String sex;
-    Quizz quizz;
+    String quizz;
 
     ArrayList<Date> dateTimeTimeSpan;
 
@@ -21,7 +21,7 @@ public class User {
     }
 
 
-    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex, Quizz quizz) {
+    public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex, String quizz) {
         this.name = name;
         this.birthdaydate = birthdaydate;
         this.userEmail = userEmail;
@@ -116,13 +116,14 @@ public class User {
         this.sex = sex;
     }
 
-    public Quizz getQuizz() {
+    public String getQuizz() {
         return quizz;
     }
 
-    public void setQuizz(Quizz quizz) {
+    public void setQuizz(String quizz) {
         this.quizz = quizz;
     }
+
 
 
 }
