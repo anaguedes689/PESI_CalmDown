@@ -1,12 +1,14 @@
-Apackage com.feup.pesi.calmdown;
+package com.feup.pesi.calmdown;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
 
 
@@ -25,6 +27,11 @@ public class IntroActivity extends AppCompatActivity {
             FirebaseApp.initializeApp(this);
         }
 
+        ImageView imageView = findViewById(R.id.gifImageView1);
+        Glide.with(this)
+                .load(R.drawable.gifintro)
+                .into(imageView);
+
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
@@ -37,6 +44,6 @@ public class IntroActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 1000); // 3 seconds delay for demonstration purposes
+        }, 2900); // 3 seconds delay for demonstration purposes
     }
 }

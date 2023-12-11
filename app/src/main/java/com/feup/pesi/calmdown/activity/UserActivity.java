@@ -3,6 +3,7 @@ package com.feup.pesi.calmdown.activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -36,6 +37,7 @@ public class UserActivity extends DashBoardActivity {
     private TextView sexTextView;
     private TextView heightTextView;
     private TextView weightTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +77,14 @@ public class UserActivity extends DashBoardActivity {
             Intent intent = new Intent(UserActivity.this, QuizzActivity.class);
             startActivity(intent);
         });
-        /*
+
         Button logoutButton = findViewById(R.id.logoutButton);
-        logoutButton.setOnClickListener(v -> logoutUser());*/
+        logoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                logoutUser();
+            }
+        });
 
         setUpBottomNavigation();
     }
@@ -147,14 +154,12 @@ public class UserActivity extends DashBoardActivity {
 
         return age;
     }
-
-
-    /*private void logoutUser() {
+    private void logoutUser() {
         mAuth.signOut();
         Intent intent = new Intent(UserActivity.this, LoginActivity.class);
-        // Add flags to clear the activity stack and prevent going back to UserActivity
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-    }*/
+    }
+
 
 }

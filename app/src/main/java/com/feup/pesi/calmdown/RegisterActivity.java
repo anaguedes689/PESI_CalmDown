@@ -33,6 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private CheckBox maleCheckBox;
     private CheckBox femaleCheckBox;
     private Button registerButton;
+    private Button loginButton;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
@@ -56,6 +57,7 @@ public class RegisterActivity extends AppCompatActivity {
         femaleCheckBox = findViewById(R.id.femaleCheckBox);
 
         registerButton = findViewById(R.id.register);
+        loginButton = findViewById(R.id.login);
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,6 +99,14 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Passwords do not match.",
                             Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
             }
         });
     }
