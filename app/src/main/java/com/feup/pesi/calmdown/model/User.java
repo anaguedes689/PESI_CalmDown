@@ -1,6 +1,7 @@
 package com.feup.pesi.calmdown.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import Bio.Library.namespace.BioLib;
@@ -29,6 +30,24 @@ public class User {
         this.quizz = quizz;
         this.sex = sex;
 
+    }
+
+    public int getAge() {
+        if (this.birthdaydate == null) {
+            return 0;
+        }
+
+        Calendar today = Calendar.getInstance();
+        Calendar birthCalendar = Calendar.getInstance();
+        birthCalendar.setTime(this.birthdaydate);
+
+        int age = today.get(Calendar.YEAR) - birthCalendar.get(Calendar.YEAR);
+
+        if (today.get(Calendar.DAY_OF_YEAR) < birthCalendar.get(Calendar.DAY_OF_YEAR)) {
+            age--;
+        }
+
+        return age;
     }
 
     public User(String name, Date birthdaydate, String userEmail, int height, int weight, String sex) {
