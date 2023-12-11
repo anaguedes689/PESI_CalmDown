@@ -288,13 +288,13 @@ public class JacketData {
         }
     return RMSSD;}
 
-    public String getStatus(User user){
+    /*public String getStatus(User user){
         String status = new String("Normal");
         String sex = user.getSex();
         int age = user.getAge();
 
 
-    return status;}
+    return status;}*/
 
 
 }

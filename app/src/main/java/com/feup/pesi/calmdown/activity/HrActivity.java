@@ -499,8 +499,7 @@ public class HrActivity extends DashBoardActivity {
         }
     }
 
-
-    private FirebaseFirestore db;
+    /*
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -530,9 +529,6 @@ public class HrActivity extends DashBoardActivity {
 
         // Configura o ouvinte de seleção de variável
     }
-
-
-
 
 
     public void obterDadosDaFirebasePeloIdDocumento(String idDocumento, Date selectedDate, String selectedVariable) {
@@ -568,5 +564,5 @@ public class HrActivity extends DashBoardActivity {
                         }
                     }
                 });
-    }
+    }*/
 }
