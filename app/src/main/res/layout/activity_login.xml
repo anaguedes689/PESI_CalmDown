@@ -23,7 +23,7 @@
                 android:layout_height="823dp"
                 android:layout_marginStart="0dp"
                 android:layout_marginTop="0dp"
-                android:contentDescription="blur"
+                android:contentDescription="@string/blur"
                 android:src="@drawable/blur" />
 
             <TextView android:id="@+id/hello"
@@ -33,7 +33,7 @@
                 android:textSize="32sp"
                 android:textColor="@color/text_color"
                 android:layout_marginLeft="-5dp"
-                android:layout_marginTop="180dp"
+                android:layout_marginTop="210dp"
                 android:layout_width="418.2dp"
                 android:layout_height="39.2dp"
                 android:text="@string/hello" />
@@ -61,20 +61,23 @@
                     android:autofillHints=""
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:background="@drawable/rounded_edittext"/>
 
                 <EditText
                     android:id="@+id/password"
+                    android:layout_marginTop="12dp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:autofillHints=""
                     android:hint="@string/password"
                     android:inputType="textPassword"
-                    android:textSize="20sp" />
+                    android:textSize="20sp"
+                    android:background="@drawable/rounded_edittext"/>
 
                 <Button
                     android:id="@+id/login"
-                    android:background="@color/orange"
+                    android:background="@drawable/button_shadow"
                     android:textStyle="bold"
                     android:layout_gravity="center_horizontal|center"
                     android:gravity="center"
@@ -83,7 +86,7 @@
                     android:layout_marginLeft="-3dp"
                     android:text="@string/login"
                     android:layout_marginStart="0dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="30dp"
                     android:layout_width="271dp"
                     android:layout_height="50dp"
                     />
@@ -98,7 +101,7 @@
                     android:textSize="13sp"
                     android:textColor="@color/text_color"
                     android:layout_marginLeft="-2dp"
-                    android:layout_marginTop="0dp"
+                    android:layout_marginTop="5dp"
                     android:layout_width="416.04dp"
                     android:layout_height="50dp"/>
 
