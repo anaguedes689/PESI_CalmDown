@@ -14,9 +14,11 @@ public class RespirationActivity extends DashBoardActivity {
         setContentView(R.layout.activity_respiration);
         setUpBottomNavigation();
 
+
         ImageView imageView = findViewById(R.id.gifImageView);
         Glide.with(this)
-                .load(R.drawable.breathing)
+                .load(R.drawable.breathing_orange)
                 .into(imageView);
+
     }
 }

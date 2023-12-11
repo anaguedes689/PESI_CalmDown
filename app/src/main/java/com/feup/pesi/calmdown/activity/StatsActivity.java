@@ -15,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.feup.pesi.calmdown.R;
 import com.github.mikephil.charting.charts.LineChart;
@@ -64,7 +63,7 @@ public class StatsActivity extends DashBoardActivity {
         db = FirebaseFirestore.getInstance();
 
         // Inicializa com a data atual
-        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
+        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase();
 
         // Chama o método para obter dados da Firebase
         obterDadosDaFirebasePeloIdDocumento(jacketDocumentId, selectedDate, selectedVariable);

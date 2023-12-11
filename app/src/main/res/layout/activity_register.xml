@@ -159,7 +159,7 @@
                                 android:layout_height="45dp"
                                 android:src="@drawable/boy"
                                 android:layout_marginStart="1dp"
-                                android:layout_marginTop="0dp"/>  />
+                                android:layout_marginTop="0dp"/>
 
                     </LinearLayout>
 
