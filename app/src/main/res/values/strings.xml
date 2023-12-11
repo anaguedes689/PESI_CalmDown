@@ -26,7 +26,6 @@
     <string name="select_data_type_prompt">Selecione o Tipo de Dados</string>
     <string name="prev_day">Dia Anterior</string>
     <string name="next_day">Próximo Dia</string>
-    <string name="blur">blur</string>
     <string-array name="variable_options">
         <item>Pulse</item>
         <item>RR</item>
