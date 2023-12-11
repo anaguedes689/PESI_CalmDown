@@ -395,6 +395,17 @@ public class BluetoothService extends Service {
                 });
     }
 
+    public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
+        double RMSSD = 0;
+        if(rr.size()>0){
+            double diff = 0;
+            for (int i = 0; i < (rr.size()); i++) {
+                diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
+            }
+            RMSSD = Math.sqrt((diff/(rr.size()-1)));
+        }
+        return RMSSD;}
+
 
     public void getInstantStress(List<Long> rrint) {
         List<Long> rr = null;
@@ -403,7 +414,7 @@ public class BluetoothService extends Service {
             rr = rrint.subList(rrint.size() - 5, rrint.size());
             // A high-risk group may be selected by the dichotomy limits of SDNN <50 ms
             String stress = new String("Normal");
-            double SDNN = 0;
+            /*double SDNN = 0;
             float sum = 0;
             for (int i = 0; i < rr.size(); i++) {
                 sum = sum + (rr.get(i));  // Convertendo Long para int e, em seguida, para float
@@ -413,11 +424,17 @@ public class BluetoothService extends Service {
             for (int i = 0; i < rr.size(); i++) {
                 diff = diff + Math.pow((double) rr.get(i) - media, 2);
             }
-            SDNN = Math.sqrt((diff / (rr.size() - 1)));
-            setLevelStress(SDNN);
-            if ((50 - 16) < SDNN) {
+            SDNN = Math.sqrt((diff / (rr.size() - 1)));*/
+            double rmssd = getRMSSD(rr);
+            setLevelStress(rmssd);
+            float up, down;
+            up=89;down=20;
+
+            float sstress = (float) (-0.89*rmssd +117.8); //em percentagem, geral
+
+            if (sstress>70) {
                 stress = "Stress levels high!";
-                if (SDNN < 32) {
+                if (sstress> 85) {
                     stress = "Stress levels EXTREMELY high!";
                 }
                 exibirNotificacao(stress);

@@ -55,11 +55,9 @@ public class HrActivity extends DashBoardActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private LineChart lineChart;
-    private String jacketDocumentId;
     private TextView hrvString;
     private TextView imcString;
 
-    private VelocimeterView  velocimeterView;
     private int height;
     private int weight;
     private int age;
@@ -71,7 +69,8 @@ public class HrActivity extends DashBoardActivity {
 
     private String userSex;
 
-    private String selectedVariable = "pulse";
+    private String selectedVariable = "rr";
+    private String jacketDocumentId;
     private Date selectedDate = new Date();
 
     //private ArrayList<Integer> rr;
@@ -86,13 +85,14 @@ public class HrActivity extends DashBoardActivity {
         lineChart = findViewById(R.id.lineChart1);
 
         jacketDocumentId = ReccuperatejacketId();
+        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
+
 
         // Get the user ID of the logged user
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             loggedUserId = currentUser.getUid();
         }
-        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
 
         hrvString.setText(String.valueOf(getSDNN()));
 
@@ -109,23 +109,6 @@ public class HrActivity extends DashBoardActivity {
             }
         });
 
-    }
-
-    private void animateVelocimeter(double hrvValue) {
-        // Animate the VelocimeterView based on the HRV value
-        ValueAnimator animator = ValueAnimator.ofFloat(velocimeterView.getCurrentValue(), (float) hrvValue);
-        animator.setDuration(1000); // Adjust duration as needed
-
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float animatedValue = (float) animation.getAnimatedValue();
-                // Update your custom view with the animated value
-                velocimeterView.setCurrentValue(animatedValue);
-            }
-        });
-
-        animator.start();
     }
 
     private void loadAndDisplayUserData(String userId) {
@@ -235,18 +218,6 @@ public class HrActivity extends DashBoardActivity {
 
         return status;}
 
-    /*private void getStress(){
-        if(this.rr.get(this.rr.size()-1)<NormalValues10Sec()){
-            System.out.printf("STRESSED");
-        }
-    }*/
-
-    private void NormalValues10Sec(){
-        //SDNN: 24.1±16.4
-        //RMSSD: 27.3±22.2
-        // https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5010946/
-    }
-
     private void NormalValues5min(){
         //SDNN: 141+-39 ms
         //SDANN: 127+-35 ms
@@ -331,8 +302,6 @@ public class HrActivity extends DashBoardActivity {
                 // Adicione outras verificações de tipo conforme necessário para outros tipos de dados
             }
         }
-
-
 
         // Configuração do eixo X
         XAxis xAxis = lineChart.getXAxis();
