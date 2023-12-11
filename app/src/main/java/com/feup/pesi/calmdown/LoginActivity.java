@@ -21,9 +21,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordField;
     private Button loginButton;
     private Button registerButton;
-
     private SharedPreferences sharedPreferences;
-
     private FirebaseAuth mAuth;
 
 
@@ -48,7 +46,6 @@ public class LoginActivity extends AppCompatActivity {
 
 // Initialize FirebaseAuth using the retrieved FirebaseApp instance
         mAuth = FirebaseAuth.getInstance(firebaseApp);
-
 
         emailField = findViewById(R.id.email);
         passwordField = findViewById(R.id.password);
