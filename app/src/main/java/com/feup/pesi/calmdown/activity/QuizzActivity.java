@@ -28,7 +28,9 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.feup.pesi.calmdown.LoginActivity;
 import com.feup.pesi.calmdown.R;
+import com.feup.pesi.calmdown.RegisterActivity;
 import com.feup.pesi.calmdown.model.Quizz;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -161,6 +163,9 @@ public class QuizzActivity extends DashBoardActivity {
 
                 addQuizzToGlobalCollection(quizz);
 
+                Intent intent = new Intent(QuizzActivity.this, LoginActivity.class);
+                startActivity(intent);
+
                 // Display quizz information (for testing purposes)
                 quizz.displayQuizzInfo();
 
@@ -200,6 +205,7 @@ public class QuizzActivity extends DashBoardActivity {
 
                     Log.d("Firestore", "Documento adicionado com ID: " + documentId);
                     // Faça o que for necessário com o ID do documento
+
                 })
                 .addOnFailureListener(e -> {
                     // Lidar com falha na adição à coleção global

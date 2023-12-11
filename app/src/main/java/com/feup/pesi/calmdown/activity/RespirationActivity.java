@@ -21,4 +21,5 @@ public class RespirationActivity extends DashBoardActivity {
                 .into(imageView);
 
     }
+
 }
