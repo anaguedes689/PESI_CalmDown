@@ -153,7 +153,6 @@ public class StatsActivity extends DashBoardActivity {
 
         boolean dataFound = false;
         // Adiciona os valores ao gráfico apenas se a data e variável coincidirem
-        // Adiciona os valores ao gráfico apenas se a data e variável coincidirem
         for (int i = 0; i < dateTimeSpan.size(); i++) {
             if (isSameDate(dateTimeSpan.get(i), selectedDate) && selectedVariable.equals(label.toLowerCase())) {
                     entries.add(new Entry(dateTimeSpan.get(i).getTime(), ( data.get(i)).floatValue()));

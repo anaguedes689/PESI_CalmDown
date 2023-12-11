@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +21,7 @@
         android:hint="Birth Date"
         android:onClick="showDatePickerDialog"
         android:inputType="date"
+        android:layout_below="@id/edit_name"
         android:focusable="false"
         android:clickable="true"
         android:layout_gravity="start|center_vertical"
@@ -32,6 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Email"
+        android:layout_below="@id/edit_birth_date"
         android:inputType="text" />
 
     <EditText
@@ -39,6 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Weight"
+        android:layout_below="@id/edit_email"
         android:inputType="numberDecimal" />
 
     <EditText
@@ -46,18 +49,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Height"
+        android:layout_below="@id/edit_weight"
         android:inputType="numberDecimal" />
 
     <CheckBox
         android:id="@+id/edit_maleCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/edit_height"
         android:text="Male" />
 
     <CheckBox
         android:id="@+id/edit_femaleCheckBox"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@id/edit_maleCheckBox"
         android:text="Female" />
 
     <Button
@@ -66,6 +72,7 @@
         android:layout_height="wrap_content"
         android:text="Save Changes"
         android:layout_gravity="center_horizontal"
+        android:layout_below="@id/edit_femaleCheckBox"
         android:layout_marginTop="16dp"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -76,6 +83,6 @@
         android:layout_alignParentBottom="true"
         app:menu="@menu/bottom_navigation_menu" />
 
-</LinearLayout>
+</RelativeLayout>
 
 

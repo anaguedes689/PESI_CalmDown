@@ -289,7 +289,7 @@ public class BluetoothService extends Service {
         }
 
         // Recupera todos os documentos da coleção
-        db.collection("jacket")
+        db.collection("jacketdata")
                 .whereEqualTo("address", macAddress)
                 .whereEqualTo("userId", currentUserId)
                 .get()
@@ -322,7 +322,7 @@ public class BluetoothService extends Service {
                                 existingNleads.add(jacket.getNleads().get(0));
                                 existingNbytes.add(jacket.getnBytes().get(0));
 
-                                db.collection("jacket").document(document.getId())
+                                db.collection("jacketdata").document(document.getId())
                                         .update(
                                                 "rr", existingRr,
                                                 "pulse", existingPulse,
@@ -349,7 +349,7 @@ public class BluetoothService extends Service {
                                 return; // Termina a execução após encontrar o documento
                             }
                             // Se não encontrou um documento existente, adiciona um novo
-                            db.collection("jacket").add(jacket)
+                            db.collection("jacketdata").add(jacket)
                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
