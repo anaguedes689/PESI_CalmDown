@@ -2,13 +2,19 @@ package com.feup.pesi.calmdown.service;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Binder;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -16,7 +22,12 @@ import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
+import com.feup.pesi.calmdown.R;
+import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.model.Jacket;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -45,6 +56,7 @@ public class BluetoothService extends Service {
     private BioLib lib;
     private String address = "";
     private BluetoothDevice deviceToConnect;
+    private Context context; // Add this line to store the context
     private boolean isConnected = false;
     public static final String DEVICE_NAME = "device_name";
     private String mConnectedDeviceName = "";
@@ -78,6 +90,16 @@ public class BluetoothService extends Service {
     private final ArrayList<Integer> accumulatedBpm = new ArrayList<>();
     private final ArrayList<Integer> accumulatedNleads = new ArrayList<>();
     private final ArrayList<Integer> accumulatedNbytes = new ArrayList<>();
+    List<Integer> existingRr;
+    List<Integer> existingPulse;
+    List<Integer> existingBatteryLevel;
+    List<Long> existingPosition;
+    List<Integer> existingBpmi;
+    List<Integer> existingBpm;
+    List<Integer> existingNleads;
+    List<Integer> existingNbytes;
+
+
     private long lastCollectionTime;
     String existingDocumentId;
 
@@ -106,6 +128,7 @@ public class BluetoothService extends Service {
     public IBinder onBind(Intent intent) {
         return binder;
     }
+
     private final Runnable periodicReadTask = new Runnable() {
         @Override
         public void run() {
@@ -236,7 +259,7 @@ public class BluetoothService extends Service {
                 pos = qrs.position;
                 rr = qrs.rr;
                 bpmi = qrs.bpmi;
-                bpm =  qrs.bpm;
+                bpm = qrs.bpm;
                 //Log.d("BluetoothService", "PEAK: " + qrs.position + "  BPMi: " + qrs.bpmi + " bpm  BPM: " + qrs.bpm + " bpm  R-R: " + qrs.rr + " ms");
                 break;
 
@@ -259,7 +282,7 @@ public class BluetoothService extends Service {
         }
     }
 
-    private void updateArrays(int pulse, int battery,long pos, int rr, int bpmi, int bpm, int nleads, int nbytes) {
+    private void updateArrays(int pulse, int battery, long pos, int rr, int bpmi, int bpm, int nleads, int nbytes) {
         accumulatedPulse.add(pulse);
         accumulatedBattery.add(battery);
         accumulatedPosition.add(pos);
@@ -303,14 +326,15 @@ public class BluetoothService extends Service {
                                 setExistingDocumentId(existingDocumentId);
                                 // Adiciona os novos valores médios às posições seguintes
 
-                                List<Integer> existingRr = (List<Integer>) document.get("rr");
-                                List<Integer> existingPulse = (List<Integer>) document.get("pulse");
-                                List<Integer> existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
-                                List<Long> existingPosition = (List<Long>) document.get("position");
-                                List<Integer> existingBpmi = (List<Integer>) document.get("bpmi");
-                                List<Integer> existingBpm = (List<Integer>) document.get("bpm");
-                                List<Integer> existingNleads = (List<Integer>) document.get("nleads");
-                                List<Integer> existingNbytes = (List<Integer>) document.get("nBytes");
+                                existingRr = (List<Integer>) document.get("rr");
+                                existingPulse = (List<Integer>) document.get("pulse");
+                                existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
+                                existingPosition = (List<Long>) document.get("position");
+                                existingBpmi = (List<Integer>) document.get("bpmi");
+                                existingBpm = (List<Integer>) document.get("bpm");
+                                existingNleads = (List<Integer>) document.get("nleads");
+                                existingNbytes = (List<Integer>) document.get("nBytes");
+                                List<Long>rr1 = (List<Long>) document.get("rr");
 
                                 // Adiciona os novos valores médios às posições seguintes, incluindo valores iguais
                                 existingRr.add(jacket.getRr().get(0));
@@ -321,6 +345,8 @@ public class BluetoothService extends Service {
                                 existingBpm.add(jacket.getBpm().get(0));
                                 existingNleads.add(jacket.getNleads().get(0));
                                 existingNbytes.add(jacket.getnBytes().get(0));
+
+                                getInstantStress(rr1);
 
                                 db.collection("jacketdata").document(document.getId())
                                         .update(
@@ -333,7 +359,7 @@ public class BluetoothService extends Service {
                                                 "nleads", existingNleads,
                                                 "nBytes", existingNbytes,
                                                 "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0))
-                                                )
+                                        )
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -368,6 +394,90 @@ public class BluetoothService extends Service {
                     }
                 });
     }
+
+
+    public void getInstantStress(List<Long> rrint) {
+        List<Long> rr = null;
+        if (rrint.size() >= 5) {
+            // Utiliza a função slice para obter as últimas 5 posições
+            rr = rrint.subList(rrint.size() - 5, rrint.size());
+            // A high-risk group may be selected by the dichotomy limits of SDNN <50 ms
+            String stress = new String("Normal");
+            double SDNN = 0;
+            float sum = 0;
+            for (int i = 0; i < rr.size(); i++) {
+                sum = sum + (rr.get(i));  // Convertendo Long para int e, em seguida, para float
+            }
+            float media = sum / (rr.size() + 1);
+            double diff = 0;
+            for (int i = 0; i < rr.size(); i++) {
+                diff = diff + Math.pow((double) rr.get(i) - media, 2);
+            }
+            SDNN = Math.sqrt((diff / (rr.size() - 1)));
+
+            if ((50 - 16) < SDNN) {
+                stress = "Stress levels high!";
+                if (SDNN < 32) {
+                    stress = "Stress levels EXTREMELY high!";
+                }
+                exibirNotificacao(stress);
+            }
+
+        }
+    }
+
+    // Método para exibir a notificação
+    private void exibirNotificacao(String mensagem) {
+        // Cria um canal de notificação (necessário para versões do Android a partir do Oreo)
+        criarCanalNotificacao(getApplicationContext());  // Use getApplicationContext()
+
+        // Cria uma Intent para a RespirationActivity
+        Intent intent = new Intent(getApplicationContext(), RespirationActivity.class);  // Use getApplicationContext()
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_IMMUTABLE);  // Use getApplicationContext()
+
+        // Cria a notificação
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getApplicationContext(), "stressnoti")  // Use getApplicationContext()
+                .setSmallIcon(R.drawable.ic_notification)
+                .setContentTitle("Stress Alert")
+                .setContentText(mensagem)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true);
+
+        // Exibe a notificação
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(getApplicationContext());  // Use getApplicationContext()
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        notificationManager.notify(1, builder.build());
+    }
+
+    // Método para criar o canal de notificação (necessário para versões do Android a partir do Oreo)
+    private void criarCanalNotificacao(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Stress channel";
+            String description = "Descrição do seu canal";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel("stressnoti", name, importance);
+            channel.setDescription(description);
+
+            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+        }
+    }
+
+
+
 
     private void setExistingDocumentId(String documentId){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
@@ -417,7 +527,6 @@ public class BluetoothService extends Service {
         // Insira na base de dados
         inserirDadosNoFirebase(jacket);
         Log.d("BluetoothService", "Dados inseridos");
-
         // Limpar os arrays acumulados
         accumulatedPulse.clear();
         accumulatedBattery.clear();
