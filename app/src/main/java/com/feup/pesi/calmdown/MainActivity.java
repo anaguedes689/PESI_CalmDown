@@ -1,5 +1,8 @@
 package com.feup.pesi.calmdown;
 
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -12,8 +15,11 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.feup.pesi.calmdown.activity.DashBoardActivity;
+import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.activity.StatsActivity;
 import com.feup.pesi.calmdown.activity.StressActivity;
+import com.google.common.math.Stats;
+import com.feup.pesi.calmdown.service.SyncService;
 import com.feup.pesi.calmdown.service.BluetoothService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -44,6 +50,9 @@ public class MainActivity extends DashBoardActivity {
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
 
+
+        // Agendar o trabalho de sincronização
+        //scheduleSyncJob();
 
         // Check if the user is logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -80,6 +89,7 @@ public class MainActivity extends DashBoardActivity {
             }
         });
 
+        // Set up the dashboard UI (assuming this is a common function)
         setUpBottomNavigation();
 
         // Retrieve and display the user's name
@@ -109,6 +119,17 @@ public class MainActivity extends DashBoardActivity {
                 }
             });
         }
+    }
+
+    private void scheduleSyncJob() {
+        ComponentName serviceName = new ComponentName(this, SyncService.class);
+        JobInfo jobInfo = new JobInfo.Builder(SyncService.JOB_ID, serviceName)
+                .setPeriodic(60 * 60 * 1000) // A cada hora
+                .setPersisted(true)
+                .build();
+
+        JobScheduler jobScheduler = (JobScheduler) getSystemService(JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(jobInfo);
     }
 
     private ServiceConnection connection = new ServiceConnection() {

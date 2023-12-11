@@ -56,13 +56,7 @@ public class SearchActivity extends DashBoardActivity {
                 if (mBluetoothAdapter.isEnabled()) {
                     // Listing paired devices
                     if (ActivityCompat.checkSelfPermission(this, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
-                        // TODO: Consider calling
-                        //    ActivityCompat#requestPermissions
-                        // here to request the missing permissions, and then overriding
-                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                        //                                          int[] grantResults)
-                        // to handle the case where the user grants the permission. See the documentation
-                        // for ActivityCompat#requestPermissions for more details.
+                            // TODO: Fazer o pedido das permissoes do bluetooth
                         return;
                     }
                     Set<BluetoothDevice> devices = mBluetoothAdapter.getBondedDevices();
