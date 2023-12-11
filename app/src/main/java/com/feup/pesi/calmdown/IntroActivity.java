@@ -1,4 +1,4 @@
-package com.feup.pesi.calmdown;
+Apackage com.feup.pesi.calmdown;
 
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
