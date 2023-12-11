@@ -8,15 +8,25 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.SQLException;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.telecom.Connection;
 import android.util.Log;
+import android.content.ContentValues;
+import android.database.sqlite.SQLiteDatabase;
+
 
 import androidx.annotation.NonNull;
 
+import com.feup.pesi.calmdown.JacketDatabaseHelper;
 import com.feup.pesi.calmdown.model.Jacket;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -287,93 +297,121 @@ public class BluetoothService extends Service {
             jacket.setUserId(currentUserId);
             jacket.setAddress(macAddress);
         }
+        if(isNetworkAvailable()) {
+            // Recupera todos os documentos da coleção
+            db.collection("jacketdata")
+                    .whereEqualTo("address", macAddress)
+                    .whereEqualTo("userId", currentUserId)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    // Encontrou um documento existente
+                                    existingDocumentId = document.getId();
+                                    setExistingDocumentId(existingDocumentId);
+                                    // Adiciona os novos valores médios às posições seguintes
 
-        // Recupera todos os documentos da coleção
-        db.collection("jacketdata")
-                .whereEqualTo("address", macAddress)
-                .whereEqualTo("userId", currentUserId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Encontrou um documento existente
-                                existingDocumentId = document.getId();
-                                setExistingDocumentId(existingDocumentId);
-                                // Adiciona os novos valores médios às posições seguintes
+                                    List<Integer> existingRr = (List<Integer>) document.get("rr");
+                                    List<Integer> existingPulse = (List<Integer>) document.get("pulse");
+                                    List<Integer> existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
+                                    List<Long> existingPosition = (List<Long>) document.get("position");
+                                    List<Integer> existingBpmi = (List<Integer>) document.get("bpmi");
+                                    List<Integer> existingBpm = (List<Integer>) document.get("bpm");
+                                    List<Integer> existingNleads = (List<Integer>) document.get("nleads");
+                                    List<Integer> existingNbytes = (List<Integer>) document.get("nBytes");
 
-                                List<Integer> existingRr = (List<Integer>) document.get("rr");
-                                List<Integer> existingPulse = (List<Integer>) document.get("pulse");
-                                List<Integer> existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
-                                List<Long> existingPosition = (List<Long>) document.get("position");
-                                List<Integer> existingBpmi = (List<Integer>) document.get("bpmi");
-                                List<Integer> existingBpm = (List<Integer>) document.get("bpm");
-                                List<Integer> existingNleads = (List<Integer>) document.get("nleads");
-                                List<Integer> existingNbytes = (List<Integer>) document.get("nBytes");
+                                    // Adiciona os novos valores médios às posições seguintes, incluindo valores iguais
+                                    existingRr.add(jacket.getRr().get(0));
+                                    existingPulse.add(jacket.getPulse().get(0));
+                                    existingBatteryLevel.add(jacket.getBatteryLevel().get(0));
+                                    existingPosition.add(jacket.getPosition().get(0));
+                                    existingBpmi.add(jacket.getBpmi().get(0));
+                                    existingBpm.add(jacket.getBpm().get(0));
+                                    existingNleads.add(jacket.getNleads().get(0));
+                                    existingNbytes.add(jacket.getnBytes().get(0));
 
-                                // Adiciona os novos valores médios às posições seguintes, incluindo valores iguais
-                                existingRr.add(jacket.getRr().get(0));
-                                existingPulse.add(jacket.getPulse().get(0));
-                                existingBatteryLevel.add(jacket.getBatteryLevel().get(0));
-                                existingPosition.add(jacket.getPosition().get(0));
-                                existingBpmi.add(jacket.getBpmi().get(0));
-                                existingBpm.add(jacket.getBpm().get(0));
-                                existingNleads.add(jacket.getNleads().get(0));
-                                existingNbytes.add(jacket.getnBytes().get(0));
-
-                                db.collection("jacketdata").document(document.getId())
-                                        .update(
-                                                "rr", existingRr,
-                                                "pulse", existingPulse,
-                                                "batteryLevel", existingBatteryLevel,
-                                                "position", existingPosition,
-                                                "bpmi", existingBpmi,
-                                                "bpm", existingBpm,
-                                                "nleads", existingNleads,
-                                                "nBytes", existingNbytes,
-                                                "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0))
-                                                )
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    db.collection("jacketdata").document(document.getId())
+                                            .update(
+                                                    "rr", existingRr,
+                                                    "pulse", existingPulse,
+                                                    "batteryLevel", existingBatteryLevel,
+                                                    "position", existingPosition,
+                                                    "bpmi", existingBpmi,
+                                                    "bpm", existingBpm,
+                                                    "nleads", existingNleads,
+                                                    "nBytes", existingNbytes,
+                                                    "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0))
+                                            )
+                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void aVoid) {
+                                                    Log.d(TAG, "Documento Jacket atualizado com sucesso!");
+                                                }
+                                            })
+                                            .addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.w(TAG, "Erro ao atualizar documento Jacket", e);
+                                                }
+                                            });
+                                    return; // Termina a execução após encontrar o documento
+                                }
+                                // Se não encontrou um documento existente, adiciona um novo
+                                db.collection("jacketdata").add(jacket)
+                                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                             @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "Documento Jacket atualizado com sucesso!");
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Log.d(TAG, "Documento Jacket adicionado com ID: " + documentReference.getId());
                                             }
                                         })
                                         .addOnFailureListener(new OnFailureListener() {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Erro ao atualizar documento Jacket", e);
+                                                Log.w(TAG, "Erro ao adicionar documento Jacket", e);
                                             }
                                         });
-                                return; // Termina a execução após encontrar o documento
+                            } else {
+                                Log.w(TAG, "Erro ao obter documentos.", task.getException());
                             }
-                            // Se não encontrou um documento existente, adiciona um novo
-                            db.collection("jacketdata").add(jacket)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                        @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            Log.d(TAG, "Documento Jacket adicionado com ID: " + documentReference.getId());
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Erro ao adicionar documento Jacket", e);
-                                        }
-                                    });
-                        } else {
-                            Log.w(TAG, "Erro ao obter documentos.", task.getException());
                         }
-                    }
-                });
+                    });
+        }else{
+            insertDataLocally(jacket);
+        }
+
     }
+
 
     private void setExistingDocumentId(String documentId){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("jacketDocumentId", documentId);
         editor.apply();
+    }
+
+
+    private void insertDataLocally(Jacket jacket) {
+        JacketDatabaseHelper dbHelper = new JacketDatabaseHelper(this);
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("address", jacket.getAddress());
+        values.put("userId", jacket.getUserId());
+        values.put("rr", jacket.getRr().get(0)); // Assuming these are single-element lists
+        values.put("pulse", jacket.getPulse().get(0));
+        values.put("batteryLevel", jacket.getBatteryLevel().get(0));
+        values.put("position", jacket.getPosition().get(0));
+        values.put("bpmi", jacket.getBpmi().get(0));
+        values.put("bpm", jacket.getBpm().get(0));
+        values.put("nleads", jacket.getNleads().get(0));
+        values.put("nBytes", jacket.getnBytes().get(0));
+        values.put("dateTimeSpan", jacket.getDateTimeSpan().get(0).toString()); // Convert Date to String
+
+        long newRowId = db.insert("jacket", null, values);
+
+        db.close();
     }
 
     private int calculateAverage(List<Integer> values) {
@@ -428,4 +466,11 @@ public class BluetoothService extends Service {
         accumulatedNleads.clear();
         accumulatedNbytes.clear();
     }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
 }
