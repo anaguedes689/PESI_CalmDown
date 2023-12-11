@@ -22,7 +22,7 @@ import com.feup.pesi.calmdown.R;
 import java.util.ArrayList;
 import java.util.Set;
 
-public class SearchActivity extends AppCompatActivity {
+public class SearchActivity extends DashBoardActivity {
     public static String SELECT_DEVICE_ADDRESS = "device_address";
     public static final int CHANGE_MACADDRESS = 100;
     private ListView mainListView;
@@ -40,6 +40,8 @@ public class SearchActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search);
+        setUpBottomNavigation();
+
 
         try {
             mainListView = (ListView) findViewById(R.id.lstDevices);

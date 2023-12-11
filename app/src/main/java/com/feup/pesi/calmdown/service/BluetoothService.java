@@ -5,6 +5,7 @@ import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 import android.annotation.SuppressLint;
 import android.app.Service;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Binder;
@@ -78,6 +79,8 @@ public class BluetoothService extends Service {
     private final ArrayList<Integer> accumulatedNleads = new ArrayList<>();
     private final ArrayList<Integer> accumulatedNbytes = new ArrayList<>();
     private long lastCollectionTime;
+    String existingDocumentId;
+
     public class LocalBinder extends Binder {
         public BluetoothService getService() {
             return BluetoothService.this;
@@ -270,7 +273,7 @@ public class BluetoothService extends Service {
     private void inserirDadosNoFirebase(Jacket jacket) {
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
-        String macAddress = Reccuperateadress();
+        String macAddress = address;
 
         if (macAddress != null) {
             Log.d("BluetoothService", macAddress);
@@ -286,7 +289,7 @@ public class BluetoothService extends Service {
         }
 
         // Recupera todos os documentos da coleção
-        db.collection("jacketdata")
+        db.collection("jacket")
                 .whereEqualTo("address", macAddress)
                 .whereEqualTo("userId", currentUserId)
                 .get()
@@ -296,23 +299,41 @@ public class BluetoothService extends Service {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 // Encontrou um documento existente
-
+                                existingDocumentId = document.getId();
+                                setExistingDocumentId(existingDocumentId);
                                 // Adiciona os novos valores médios às posições seguintes
-                                db.collection("jacketdata").document(document.getId())
+
+                                List<Integer> existingRr = (List<Integer>) document.get("rr");
+                                List<Integer> existingPulse = (List<Integer>) document.get("pulse");
+                                List<Integer> existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
+                                List<Long> existingPosition = (List<Long>) document.get("position");
+                                List<Integer> existingBpmi = (List<Integer>) document.get("bpmi");
+                                List<Integer> existingBpm = (List<Integer>) document.get("bpm");
+                                List<Integer> existingNleads = (List<Integer>) document.get("nleads");
+                                List<Integer> existingNbytes = (List<Integer>) document.get("nBytes");
+
+                                // Adiciona os novos valores médios às posições seguintes, incluindo valores iguais
+                                existingRr.add(jacket.getRr().get(0));
+                                existingPulse.add(jacket.getPulse().get(0));
+                                existingBatteryLevel.add(jacket.getBatteryLevel().get(0));
+                                existingPosition.add(jacket.getPosition().get(0));
+                                existingBpmi.add(jacket.getBpmi().get(0));
+                                existingBpm.add(jacket.getBpm().get(0));
+                                existingNleads.add(jacket.getNleads().get(0));
+                                existingNbytes.add(jacket.getnBytes().get(0));
+
+                                db.collection("jacket").document(document.getId())
                                         .update(
-                                                "pulse", FieldValue.arrayUnion(jacket.getPulse().get(0)),
-                                                "batteryLevel", FieldValue.arrayUnion(jacket.getBatteryLevel().get(0)),
-                                                "position", FieldValue.arrayUnion(jacket.getPosition().get(0)),
-                                                "batteryLevel", FieldValue.arrayUnion(jacket.getBatteryLevel().get(0)),
-                                                "bpm", FieldValue.arrayUnion(jacket.getBpm().get(0)),
-                                                "bpmi", FieldValue.arrayUnion(jacket.getBpmi().get(0)),
-                                                "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0)),
-                                                "nBytes", FieldValue.arrayUnion(jacket.getnBytes().get(0)),
-                                                "nleads", FieldValue.arrayUnion(jacket.getNleads().get(0)),
-                                                "pulse",FieldValue.arrayUnion(jacket.getPulse().get(0)),
-                                                "rr", FieldValue.arrayUnion(jacket.getRr().get(0))
-                                                // Adicione outros campos aqui
-                                        )
+                                                "rr", existingRr,
+                                                "pulse", existingPulse,
+                                                "batteryLevel", existingBatteryLevel,
+                                                "position", existingPosition,
+                                                "bpmi", existingBpmi,
+                                                "bpm", existingBpm,
+                                                "nleads", existingNleads,
+                                                "nBytes", existingNbytes,
+                                                "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0))
+                                                )
                                         .addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void aVoid) {
@@ -328,7 +349,7 @@ public class BluetoothService extends Service {
                                 return; // Termina a execução após encontrar o documento
                             }
                             // Se não encontrou um documento existente, adiciona um novo
-                            db.collection("jacketdata").add(jacket)
+                            db.collection("jacket").add(jacket)
                                     .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                         @Override
                                         public void onSuccess(DocumentReference documentReference) {
@@ -346,6 +367,13 @@ public class BluetoothService extends Service {
                         }
                     }
                 });
+    }
+
+    private void setExistingDocumentId(String documentId){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("jacketDocumentId", documentId);
+        editor.apply();
     }
 
     private int calculateAverage(List<Integer> values) {

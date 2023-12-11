@@ -5,91 +5,127 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <TextView
-        android:id="@+id/nameTextView"
+    <ScrollView android:id="@+id/mainactivity"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="User Name"
-        android:textSize="18sp"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        android:layout_height="match_parent" >
 
-    <TextView
-        android:id="@+id/emailTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="user@example.com"
-        android:textSize="16sp"
-        android:layout_below="@id/nameTextView"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/ageTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Age: "
-        android:textSize="16sp"
-        android:layout_below="@id/emailTextView"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/sexTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sex: "
-        android:textSize="16sp"
-        android:layout_below="@id/ageTextView"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/heightTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Height: "
-        android:textSize="16sp"
-        android:layout_below="@id/sexTextView"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"/>
-
-    <TextView
-        android:id="@+id/weightTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Weight: "
-        android:textSize="16sp"
-        android:layout_below="@id/heightTextView"
-        android:layout_marginTop="10dp"
-        android:layout_centerHorizontal="true"/>
-
-    <Button
-        android:id="@+id/editButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit"
-        android:layout_below="@id/weightTextView"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
-    <Button
-        android:id="@+id/editQuizzButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Edit Quizz"
-        android:layout_below="@id/editButton"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+        <RelativeLayout android:id="@+id/page_activity_main"
+            android:layout_marginTop="0dp"
+            android:layout_marginStart="0dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
 
-    <Button
-        android:id="@+id/logoutButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Logout"
-        android:layout_below="@id/editQuizzButton"
-        android:layout_marginTop="20dp"
-        android:layout_centerHorizontal="true"/>
+            <ImageView
+                android:id="@+id/relax"
+                android:layout_width="411dp"
+                android:layout_height="150dp"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="35dp"
+                android:src="@drawable/user" />
+
+            <LinearLayout
+                android:layout_width="800dp"
+                android:layout_height="600dp"
+                android:layout_marginTop="100dp"
+                android:orientation="vertical"
+                android:gravity="center"
+                android:padding="16dp">
+
+                <TextView
+                    android:id="@+id/nameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="User Name"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="5dp"
+                    android:layout_centerHorizontal="true"
+                    android:background="@drawable/rounded_edittext"/>
+
+                <TextView
+                    android:id="@+id/emailTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="user@example.com"
+                    android:textSize="16sp"
+                    android:layout_below="@id/nameTextView"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/ageTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Age: "
+                    android:textSize="16sp"
+                    android:layout_below="@id/emailTextView"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/sexTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sex: "
+                    android:textSize="16sp"
+                    android:layout_below="@id/ageTextView"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/heightTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Height: "
+                    android:textSize="16sp"
+                    android:layout_below="@id/sexTextView"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"/>
+
+                <TextView
+                    android:id="@+id/weightTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Weight: "
+                    android:textSize="16sp"
+                    android:layout_below="@id/heightTextView"
+                    android:layout_marginTop="10dp"
+                    android:layout_centerHorizontal="true"/>
+
+                <Button
+                    android:id="@+id/editButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit"
+                    android:layout_below="@id/weightTextView"
+                    android:layout_marginTop="20dp"
+                    android:layout_centerHorizontal="true"/>
+
+                <Button
+                    android:id="@+id/editQuizzButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Edit Quizz"
+                    android:layout_below="@id/editButton"
+                    android:layout_marginTop="20dp"
+                    android:layout_centerHorizontal="true"/>
+
+
+                <Button
+                    android:id="@+id/logoutButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Logout"
+                    android:layout_below="@id/editQuizzButton"
+                    android:layout_marginTop="20dp"
+                    android:layout_centerHorizontal="true"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"

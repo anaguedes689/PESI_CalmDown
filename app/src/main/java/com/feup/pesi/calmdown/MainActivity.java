@@ -8,7 +8,9 @@ import android.widget.TextView;
 
 import com.feup.pesi.calmdown.activity.DashBoardActivity;
 import com.feup.pesi.calmdown.activity.RespirationActivity;
+import com.feup.pesi.calmdown.activity.StatsActivity;
 import com.feup.pesi.calmdown.activity.StressActivity;
+import com.google.common.math.Stats;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -17,7 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MainActivity extends DashBoardActivity {
 
-    private Button btnStress, btnHrv;
+    private Button btnStress, btnHrv, btnStats;
     private TextView userNameTextView; // Assuming you have a TextView to display the user name
 
     private FirebaseAuth mAuth;
@@ -45,6 +47,8 @@ public class MainActivity extends DashBoardActivity {
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnHrv = findViewById(R.id.btnHrv);
+        btnStats = findViewById(R.id.btnStats);
+
 
         btnStress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -54,8 +58,15 @@ public class MainActivity extends DashBoardActivity {
                 startActivity(intent);
             }
         });
+        btnStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Abrir StressActivity
+                Intent intent = new Intent(MainActivity.this, StatsActivity.class);
+                startActivity(intent);
+            }
+        });
 
-        // Set up the dashboard UI (assuming this is a common function)
         setUpBottomNavigation();
 
         // Retrieve and display the user's name

@@ -25,7 +25,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
 
-public class EditUserActivity extends AppCompatActivity {
+public class EditUserActivity extends DashBoardActivity {
 
     private EditText nameField;
     private EditText birthDateField;
@@ -50,6 +50,7 @@ public class EditUserActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        setUpBottomNavigation();
 
 
         nameField = findViewById(R.id.edit_name);

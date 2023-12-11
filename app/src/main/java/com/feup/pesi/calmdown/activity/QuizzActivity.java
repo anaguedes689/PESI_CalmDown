@@ -39,7 +39,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 
-public class QuizzActivity extends AppCompatActivity {
+public class QuizzActivity extends DashBoardActivity {
 
 
     private static final String USERS_COLLECTION = "users";
@@ -62,6 +62,7 @@ public class QuizzActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quizz);
+        setUpBottomNavigation();
 
         seekBarStressLevel = findViewById(R.id.seekBarStressLevel);
         radioGroupRelaxPreference = findViewById(R.id.radioGroupRelaxPreference);
