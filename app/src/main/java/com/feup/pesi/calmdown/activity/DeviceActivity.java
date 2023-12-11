@@ -30,14 +30,14 @@ public class DeviceActivity extends DashBoardActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_device);
-        Intent serviceIntent = new Intent(this, BluetoothService.class);
-        startService(serviceIntent);
-        Intent intent = new Intent(this, BluetoothService.class);
-        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        //Intent serviceIntent = new Intent(this, BluetoothService.class);
+        //startService(serviceIntent);
+        //Intent intent = new Intent(this, BluetoothService.class);
+        //bindService(intent, connection, Context.BIND_AUTO_CREATE);
         setUpBottomNavigation();
 
         // Recupera o endereço MAC da última conexão
-        address = Reccuperateadress();
+        //address = Reccuperateadress();
 
         buttonSearch = (Button) findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(new View.OnClickListener() {
@@ -122,8 +122,8 @@ public class DeviceActivity extends DashBoardActivity {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
     }
 
-    public String Reccuperateadress() {
+    /*public String Reccuperateadress() {
         SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         return preferences.getString("selectedValue", "");
-    }
+    }*/
 }

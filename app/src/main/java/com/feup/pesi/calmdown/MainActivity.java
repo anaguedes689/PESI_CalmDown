@@ -1,16 +1,20 @@
 package com.feup.pesi.calmdown;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.feup.pesi.calmdown.activity.DashBoardActivity;
-import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.activity.StatsActivity;
 import com.feup.pesi.calmdown.activity.StressActivity;
-import com.google.common.math.Stats;
+import com.feup.pesi.calmdown.service.BluetoothService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -24,6 +28,9 @@ public class MainActivity extends DashBoardActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
+    private String address = "";
+    private BluetoothService bluetoothService;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +38,12 @@ public class MainActivity extends DashBoardActivity {
 
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        Intent serviceIntent = new Intent(this, BluetoothService.class);
+        startService(serviceIntent);
+        Intent intent = new Intent(this, BluetoothService.class);
+        bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
+
 
         // Check if the user is logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -73,6 +86,11 @@ public class MainActivity extends DashBoardActivity {
         displayUserName();
     }
 
+    public String Reccuperateadress() {
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        return preferences.getString("selectedValue", "");
+    }
+
     private void displayUserName() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
@@ -92,4 +110,41 @@ public class MainActivity extends DashBoardActivity {
             });
         }
     }
+
+    private ServiceConnection connection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            // Vincula a instância do serviço
+            BluetoothService.LocalBinder binder = (BluetoothService.LocalBinder) service;
+            bluetoothService = binder.getService();
+
+            // Verifica se há um dispositivo previamente selecionado
+            if (bluetoothService != null) {
+                // Inicia o BluetoothService, se necessário
+                if (!bluetoothService.isServiceRunning()) {
+                    Intent serviceIntent = new Intent(MainActivity.this, BluetoothService.class);
+                    startService(serviceIntent);
+                }
+
+                // Conecta ao dispositivo previamente selecionado
+                bluetoothService.startBluetoothConnection();
+            }
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+
+        }
+
+        @Override
+        public void onBindingDied(ComponentName name) {
+            ServiceConnection.super.onBindingDied(name);
+        }
+
+        @Override
+        public void onNullBinding(ComponentName name) {
+            ServiceConnection.super.onNullBinding(name);
+        }
+
+    };
 }
