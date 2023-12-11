@@ -1,5 +1,7 @@
 package com.feup.pesi.calmdown.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import android.content.Intent;
 import com.feup.pesi.calmdown.LoginActivity;
 
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -155,11 +158,69 @@ public class UserActivity extends DashBoardActivity {
         return age;
     }
     private void logoutUser() {
-        mAuth.signOut();
-        Intent intent = new Intent(UserActivity.this, LoginActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
+        // Build an AlertDialog for confirmation
+        AlertDialog.Builder builder = new AlertDialog.Builder(UserActivity.this);
+        builder.setTitle("Logout Confirmation");
+        builder.setMessage("Are you sure you want to logout?");
+
+        // Set positive button (Yes action)
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                mAuth.signOut();
+                clearCache(); // clear cache
+                Intent intent = new Intent(UserActivity.this, LoginActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(intent);
+            }
+        });
+
+        // Set negative button (No action)
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // User clicked No, do nothing or handle as needed
+            }
+        });
+
+        // Show the AlertDialog
+        builder.show();
     }
+
+
+
+    private void clearCache() {
+        try {
+            File cacheDir = getCacheDir();
+            File appDir = new File(cacheDir.getParent());
+            if (appDir.exists()) {
+                String[] children = appDir.list();
+                for (String s : children) {
+                    if (!s.equals("lib")) {
+                        deleteDir(new File(appDir, s));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+        return dir.delete();
+    }
+
+
+
 
 
 }
