@@ -414,7 +414,7 @@ public class BluetoothService extends Service {
                 diff = diff + Math.pow((double) rr.get(i) - media, 2);
             }
             SDNN = Math.sqrt((diff / (rr.size() - 1)));
-
+            setLevelStress(SDNN);
             if ((50 - 16) < SDNN) {
                 stress = "Stress levels high!";
                 if (SDNN < 32) {
@@ -426,6 +426,12 @@ public class BluetoothService extends Service {
         }
     }
 
+    private void setLevelStress(double stresslevel){
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putFloat("stresslevel", (float) stresslevel);
+        editor.apply();
+    }
     // Método para exibir a notificação
     private void exibirNotificacao(String mensagem) {
         // Cria um canal de notificação (necessário para versões do Android a partir do Oreo)
