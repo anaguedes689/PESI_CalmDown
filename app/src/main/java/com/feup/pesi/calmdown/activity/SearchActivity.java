@@ -1,5 +1,7 @@
 package com.feup.pesi.calmdown.activity;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -7,19 +9,28 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.feup.pesi.calmdown.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Set;
 
 public class SearchActivity extends DashBoardActivity {
@@ -30,6 +41,10 @@ public class SearchActivity extends DashBoardActivity {
     private String selectedValue = "";
     private BluetoothAdapter mBluetoothAdapter = null;
     private Button buttonOK;
+    private boolean isCon;
+    private String jacketId;
+
+    private TextView textBatteryLevel;  // Adicione esta linha
 
     public String GetMacAddress() {
         return selectedValue;
@@ -67,7 +82,6 @@ public class SearchActivity extends DashBoardActivity {
                 }
             }
             mainListView.setAdapter( listAdapter );
-
             mainListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
@@ -95,11 +109,13 @@ public class SearchActivity extends DashBoardActivity {
 
     }
 
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         getMenuInflater().inflate(R.menu.activity_search_device, menu);
         return true;
     }
+
 
 }

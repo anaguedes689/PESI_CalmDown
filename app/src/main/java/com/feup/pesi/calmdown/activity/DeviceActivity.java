@@ -1,5 +1,7 @@
 package com.feup.pesi.calmdown.activity;
 
+import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
+
 import android.bluetooth.BluetoothDevice;
 import android.content.ComponentName;
 import android.content.Context;
@@ -8,14 +10,23 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.feup.pesi.calmdown.R;
 import com.feup.pesi.calmdown.service.BluetoothService;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
 
 import Bio.Library.namespace.BioLib;
 
@@ -26,6 +37,11 @@ public class DeviceActivity extends DashBoardActivity {
     private BluetoothDevice deviceToConnect;
     private Button buttonSearch;
     private BluetoothService bluetoothService;
+    private boolean isCon;
+    private String jacketId;
+    private FirebaseFirestore db;
+    private TextView textBatteryLevel;  // Adicione esta linha
+
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,10 +51,16 @@ public class DeviceActivity extends DashBoardActivity {
         //Intent intent = new Intent(this, BluetoothService.class);
         //bindService(intent, connection, Context.BIND_AUTO_CREATE);
         setUpBottomNavigation();
-
+        isCon = getIsConnected();
+        jacketId= ReccuperatejacketId();
         // Recupera o endereço MAC da última conexão
         //address = Reccuperateadress();
 
+        textBatteryLevel = findViewById(R.id.buttonDisconnect);
+
+        /*if (isCon) {
+            obterDadosDaFirebasePeloIdDocumento(jacketId);
+        }*/
         buttonSearch = (Button) findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -96,6 +118,8 @@ public class DeviceActivity extends DashBoardActivity {
             ServiceConnection.super.onNullBinding(name);
         }
 
+
+
     };
     /*private void Connect() {
         try {
@@ -117,6 +141,46 @@ public class DeviceActivity extends DashBoardActivity {
             e.printStackTrace();
         }
     }*/
+  /*  public void obterDadosDaFirebasePeloIdDocumento(String idDocumento) {
+        db.collection("jacketdata")
+                .document(idDocumento)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            DocumentSnapshot document = task.getResult();
+                            if (document.exists()) {
+                               ArrayList<Long> bat = (ArrayList<Long>) document.get("batteryLevel");
+
+                                // Verifica se há dados de bateria
+                                if (bat != null && !bat.isEmpty()) {
+                                    // Obtém o último valor da bateria
+                                    long lastBatteryLevel = bat.get(bat.size() - 1);
+
+                                    // Atualiza o TextView com o valor da bateria
+                                    textBatteryLevel.setText("Battery Level: " + lastBatteryLevel);
+                                } else {
+                                    textBatteryLevel.setText("Battery Level: N/A");
+                                }
+                            } else {
+                                Log.d(TAG, "Documento não encontrado");
+                            }
+                        } else {
+                            Log.w(TAG, "Falha ao obter documento", task.getException());
+                        }
+                    }
+                });
+    }*/
+    private boolean getIsConnected() {
+        // Recupera o valor de isConnected do SharedPreferences
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        return sharedPreferences.getBoolean("isConnected", false); // O segundo parâmetro é um valor padrão caso não haja valor salvo
+    }
+    public String ReccuperatejacketId() {
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        return preferences.getString("jacketDocumentId", "");
+    }
 
     private void showToast(String message) {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());

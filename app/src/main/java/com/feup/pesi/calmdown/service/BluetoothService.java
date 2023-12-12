@@ -136,6 +136,7 @@ public class BluetoothService extends Service {
             updateArrays(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
             DATETIME_TIMESPAN = new Date();
             long currentTime = System.currentTimeMillis();
+
             if (currentTime - lastCollectionTime >= COLLECTION_INTERVAL) {
                 lastCollectionTime = currentTime;
 
@@ -144,9 +145,17 @@ public class BluetoothService extends Service {
 
                 DATETIME_TIMESPAN = new Date();
             }
+            saveIsConnected(isConnected);
         }
     };
 
+
+    private void saveIsConnected(boolean isConnected) {
+        SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isConnected", isConnected);
+        editor.apply();
+    }
     public void startBluetoothConnection() {
         // Inicializar BioLib e estabelecer a conexão Bluetooth aqui
         address = Reccuperateadress();
@@ -158,7 +167,9 @@ public class BluetoothService extends Service {
                 isConnected = true;
                 Log.d("BluetoothService", "Conectado ao dispositivo: " + address);
             } catch (Exception e) {
+                isConnected=false;
                 throw new RuntimeException(e);
+
             }
         }
     }

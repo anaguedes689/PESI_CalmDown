@@ -319,7 +319,7 @@ public class HrActivity extends DashBoardActivity {
         }
     }
 
-    private void filterData(Date selectedDate, String selectedVariable, ArrayList<Date> dateTimeSpan, ArrayList<Long> data, String label) {
+    private void filterData(Date selectedDate, ArrayList<Date> dateTimeSpan, ArrayList<Long> data, String label) {
         List<Entry> entries = new ArrayList<>();
 
         boolean dataFound = false;
@@ -527,7 +527,7 @@ public class HrActivity extends DashBoardActivity {
                                 }
                                 if (selectedVariable.equalsIgnoreCase(rr1)) {
                                     ArrayList<Long> rr = (ArrayList<Long>) document.get("rr");
-                                    //filterData(selectedDate, selectedVariable, dateTimeSpan, rr, "RR");
+                                    filterData(selectedDate, dateTimeSpan, rr, "RR");
 
                                 }
 

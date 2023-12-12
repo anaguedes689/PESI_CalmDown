@@ -162,6 +162,7 @@ public class QuizzActivity extends DashBoardActivity {
                     quizz = new Quizz(userID, stressLevel, relaxPreference, colorToHexString(selectedColor), notificationPreference);
                 }
 
+
                 addQuizzToGlobalCollection(quizz);
 
                 Intent intent = new Intent(QuizzActivity.this, MainActivity.class);
