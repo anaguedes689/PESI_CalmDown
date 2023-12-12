@@ -191,7 +191,7 @@ public class QuizzActivity extends DashBoardActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                imageView.setBackgroundColor(Color.TRANSPARENT); // Muda de volta para a cor original (transparente)
+                imageView.setBackgroundColor(Color.WHITE); // Muda de volta para a cor original (transparente)
             }
         }, 1000); // Tempo em milissegundos para voltar à cor original, neste caso, 1 segundo
     }

@@ -95,7 +95,7 @@ public class MainActivity extends DashBoardActivity {
         double rmssd = getRMSSD(rr);
         float stress = (float) (-1.12359*rmssd + 117.8);
 
-        stressbar.setProgress((int) stress);
+        stressbar.setProgress(Math.round(stress));
         StressLevel.setText(String.valueOf(stress));
 
 
