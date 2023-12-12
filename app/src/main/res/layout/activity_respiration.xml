@@ -6,6 +6,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginTop="30dp"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textinfo"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textSize="22sp"
+            android:gravity="center"
+            android:textStyle="bold"
+            android:text="Stress level now" />
+
+        <TextView
+            android:id="@+id/textStress"
+            android:layout_width="match_parent"
+            android:layout_height="46dp"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:text="TextView" />
+
+    </LinearLayout>
+
     <ImageView
         android:id="@+id/gifImageView"
         android:layout_width="wrap_content"
@@ -20,10 +46,5 @@
         style="@style/Widget.MaterialComponents.BottomNavigationView"
         app:menu="@menu/bottom_navigation_menu" />
 
-    <TextView
-        android:id="@+id/textStress"
-        android:layout_width="100dp"
-        android:layout_height="46dp"
-        android:text="TextView" />
 
 </RelativeLayout>
