@@ -40,7 +40,7 @@ public class DeviceActivity extends DashBoardActivity {
     private boolean isCon;
     private String jacketId;
     private FirebaseFirestore db;
-    private TextView textBatteryLevel;  // Adicione esta linha
+    private TextView textBatteryLevel;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -56,11 +56,13 @@ public class DeviceActivity extends DashBoardActivity {
         // Recupera o endereço MAC da última conexão
         //address = Reccuperateadress();
 
+        db = FirebaseFirestore.getInstance();
+
         textBatteryLevel = findViewById(R.id.buttonDisconnect);
 
-        /*if (isCon) {
+        if (isCon) {
             obterDadosDaFirebasePeloIdDocumento(jacketId);
-        }*/
+        }
         buttonSearch = (Button) findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
@@ -141,7 +143,7 @@ public class DeviceActivity extends DashBoardActivity {
             e.printStackTrace();
         }
     }*/
-  /*  public void obterDadosDaFirebasePeloIdDocumento(String idDocumento) {
+    public void obterDadosDaFirebasePeloIdDocumento(String idDocumento) {
         db.collection("jacketdata")
                 .document(idDocumento)
                 .get()
@@ -171,7 +173,7 @@ public class DeviceActivity extends DashBoardActivity {
                         }
                     }
                 });
-    }*/
+    }
     private boolean getIsConnected() {
         // Recupera o valor de isConnected do SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);

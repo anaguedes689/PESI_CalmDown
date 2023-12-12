@@ -12,6 +12,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -44,11 +45,16 @@ public class MainActivity extends DashBoardActivity {
 
     private Button btnStress, btnStats;
     private ProgressBar stressbar;
+    private float stressLevel;
+    private TextView stressTextView;
+
     private TextView userNameTextView; // Assuming you have a TextView to display the user name
     private TextView StressLevel;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String address = "";
+    private Handler handler;
+    private static final int UPDATE_INTERVAL = 60 * 1000;
 
     private String jacketDocumentId;
     private String selectedVariable;
@@ -67,13 +73,6 @@ public class MainActivity extends DashBoardActivity {
         Intent intent = new Intent(this, BluetoothService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
 
-
-        jacketDocumentId = ReccuperatejacketId();
-        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
-
-        obterDadosDaFirebasePeloIdDocumento(jacketDocumentId, selectedDate);
-        //fez set do RR
-
         // Check if the user is logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser == null) {
@@ -84,42 +83,17 @@ public class MainActivity extends DashBoardActivity {
             return;
         }
 
+        startUpdatingStressLevel();
         setContentView(R.layout.activity_main);
 
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnStats = findViewById(R.id.btnStats);
         stressbar = findViewById(R.id.stressbar);
-        StressLevel = findViewById(R.id.StressLevel);
 
-        double rmssd = getRMSSD(rr);
-        float stress = (float) (-1.12359*rmssd + 117.8);
-
-        stressbar.setProgress((int) stress);
-        StressLevel.setText(String.valueOf(stress));
-
-
-    /*
-        Speed = (SpeedometerView)findViewById(R.id.speedometer);
-        Speed.setLabelConverter(new SpeedometerView.LabelConverter() {
-            @Override
-            public String getLabelFor(double progress, double maxProgress) {
-                return String.valueOf((int) Math.round(progress));
-            }
-        });
-
-        // configure value range and ticks
-        Speed.setMaxSpeed(100);
-        Speed.setMajorTickStep(25);
-        Speed.setMinorTicks(0);
-
-// Configure value range colors
-        Speed.addColoredRange(0, 50, Color.GREEN);
-        Speed.addColoredRange(50, 75, Color.YELLOW);
-        Speed.addColoredRange(75, 100, Color.RED);
-        Speed.setSpeed(25, 2000, 500);*/
-
-
+        stressTextView = findViewById(R.id.StressLevel);
+        stressLevel = ReccuperateStress();
+        stressTextView.setText(String.valueOf(stressLevel));
 
         btnStress.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,21 +124,25 @@ public class MainActivity extends DashBoardActivity {
         return preferences.getString("selectedValue", "");
     }
 
-    public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
-        double RMSSD = 0;
-        if(rr!=null){
-            double diff = 0;
-            for (int i = 0; i < (rr.size()); i++) {
-                diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
-            }
-            RMSSD = Math.sqrt((diff/(rr.size()-1)));
-        }else{return 0;}
-        return RMSSD;}
+    private void startUpdatingStressLevel() {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                // Atualiza o stress level
+                stressLevel = ReccuperateStress();
+                stressTextView.setText(String.valueOf(stressLevel));
 
-    public String ReccuperatejacketId() {
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        return preferences.getString("jacketDocumentId", "");
+                // Agende a próxima atualização após 1 minuto
+                handler.postDelayed(this, UPDATE_INTERVAL);
+            }
+        }, UPDATE_INTERVAL);
     }
+
+    public float ReccuperateStress() {
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        return preferences.getFloat("stresslevel", 0.0f); // 0.0f é o valor padrão se a chave não existir
+    }
+
 
     private void displayUserName() {
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -222,121 +200,5 @@ public class MainActivity extends DashBoardActivity {
         }
 
     };
-    public void obterDadosDaFirebasePeloIdDocumento(String idDocumento, Date selectedDate) {
-        db.collection("jacket")
-                .document(idDocumento)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
 
-                    @Override
-                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                        if (task.isSuccessful()) {
-                            DocumentSnapshot document = task.getResult();
-                            if (document.exists()) {
-                                String rr1="rr";
-                                ArrayList<Timestamp> timestampList = (ArrayList<Timestamp>) document.get("dateTimeSpan");
-                                ArrayList<Date> dateTimeSpan = new ArrayList<>();
-
-                                for (Timestamp timestamp : timestampList) {
-                                    dateTimeSpan.add(timestamp.toDate());
-                                }
-                                if (selectedVariable.equalsIgnoreCase(rr1)) {
-                                    rr = (ArrayList<Long>) document.get("rr");
-                                    //filterData(selectedDate, selectedVariable, dateTimeSpan, rr, "RR");
-
-                                }
-
-
-
-                            } else {
-                                Log.d(TAG, "Documento não encontrado");
-                            }
-                        } else {
-                            Log.w(TAG, "Falha ao obter documento", task.getException());
-                        }
-                    }
-                });
-    }
-
-
-    /*
-
-    public class VelocimeterView extends View {
-        private Paint dialPaint;
-        private Paint needlePaint;
-        private Paint textPaint;
-
-        private float currentValue = 0; // Current speed value
-
-        public VelocimeterView(Context context) {
-            super(context);
-            init();
-        }
-
-        public VelocimeterView(Context context, AttributeSet attrs) {
-            super(context, attrs);
-            init();
-        }
-
-        public VelocimeterView(Context context, AttributeSet attrs, int defStyleAttr) {
-            super(context, attrs, defStyleAttr);
-            init();
-        }
-
-        private void init() {
-            dialPaint = new Paint();
-            dialPaint.setColor(Color.BLACK);
-            dialPaint.setStyle(Paint.Style.STROKE);
-            dialPaint.setStrokeWidth(8f);
-            dialPaint.setAntiAlias(true);
-
-            needlePaint = new Paint();
-            needlePaint.setColor(Color.RED);
-            needlePaint.setStyle(Paint.Style.STROKE);
-            needlePaint.setStrokeWidth(5f);
-            needlePaint.setAntiAlias(true);
-
-            textPaint = new Paint();
-            textPaint.setColor(Color.BLACK);
-            textPaint.setTextSize(30f);
-            textPaint.setAntiAlias(true);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-
-            int width = getWidth();
-            int height = getHeight();
-            int centerX = width / 2;
-            int centerY = height / 2;
-
-            // Draw dial
-            canvas.drawCircle(centerX, centerY, Math.min(centerX, centerY) - 20, dialPaint);
-
-            // Draw needle
-            float angle = (currentValue / 220) * 180 - 90; // Assuming a range of 0 to 220 for demonstration
-            float needleLength = Math.min(centerX, centerY) - 40;
-            float startX = centerX + needleLength / 2 * (float) Math.cos(Math.toRadians(angle));
-            float startY = centerY + needleLength / 2 * (float) Math.sin(Math.toRadians(angle));
-            float endX = centerX + needleLength * (float) Math.cos(Math.toRadians(angle));
-            float endY = centerY + needleLength * (float) Math.sin(Math.toRadians(angle));
-            canvas.drawLine(startX, startY, endX, endY, needlePaint);
-
-            // Draw text
-            String speedText = String.format("%.1f", currentValue);
-            float textWidth = textPaint.measureText(speedText);
-            canvas.drawText(speedText, centerX - textWidth / 2, centerY + 50, textPaint);
-        }
-
-        // Method to set the current value and trigger a redraw
-        public void setCurrentValue(float value) {
-            currentValue = value;
-            invalidate(); // Trigger onDraw
-        }
-
-        public float getCurrentValue() {
-            return currentValue;
-        }
-    }*/
 }

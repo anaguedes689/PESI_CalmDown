@@ -145,7 +145,7 @@ public class BluetoothService extends Service {
 
                 DATETIME_TIMESPAN = new Date();
             }
-            saveIsConnected(isConnected);
+            //saveIsConnected(isConnected);
         }
     };
 
@@ -166,8 +166,10 @@ public class BluetoothService extends Service {
                 lib.Connect(address, 5);
                 isConnected = true;
                 Log.d("BluetoothService", "Conectado ao dispositivo: " + address);
+                saveIsConnected(isConnected);
             } catch (Exception e) {
                 isConnected=false;
+                saveIsConnected(isConnected);
                 throw new RuntimeException(e);
 
             }
@@ -408,9 +410,9 @@ public class BluetoothService extends Service {
 
     public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
         double RMSSD = 0;
-        if(rr.size()>0){
+        if(rr!=null){
             double diff = 0;
-            for (int i = 0; i < (rr.size()); i++) {
+            for (int i = 0; i < (rr.size()-1); i++) {
                 diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
             }
             RMSSD = Math.sqrt((diff/(rr.size()-1)));

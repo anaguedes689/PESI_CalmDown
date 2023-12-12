@@ -3,6 +3,7 @@ package com.feup.pesi.calmdown.activity;
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -61,6 +62,7 @@ public class StatsActivity extends DashBoardActivity {
 
         // Inicializa o Firestore
         db = FirebaseFirestore.getInstance();
+
 
         // Inicializa com a data atual
         selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase();
@@ -168,11 +170,19 @@ public class StatsActivity extends DashBoardActivity {
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setLabelRotationAngle(45f);
 
+        xAxis.setAxisMinimum(selectedDate.getTime() - (12 * 60 * 60 * 1000)); // 12 horas antes da data selecionada
+        xAxis.setAxisMaximum(selectedDate.getTime() + (12 * 60 * 60 * 1000));
+
         // Configuração do eixo Y
         YAxis yAxis = lineChart.getAxisLeft();
 // Configuração da escala e do intervalo
         yAxis.setGranularity(60 * 60); // Configura o intervalo em segundos (aqui, 1 hora)
         yAxis.setValueFormatter(new HourAxisValueFormatter()); // Define o formatador de valores para exibir em horas
+
+
+        lineChart.setBackgroundColor(Color.WHITE);
+        lineChart.setDrawBorders(true);
+        lineChart.setBorderColor(Color.BLACK);
 
         // Configuração dos dados do gráfico
         lineChart.getDescription().setText(label);
@@ -184,7 +194,9 @@ public class StatsActivity extends DashBoardActivity {
         dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
         dataSet.setCubicIntensity(0.2f);
         dataSet.setLineWidth(2f);
-
+// Adicione estas linhas para definir a cor da linha
+        dataSet.setColor(Color.RED);
+        dataSet.setCircleColor(Color.RED);
         dataSet.setDrawValues(false);
 
         // Adiciona o conjunto de dados ao gráfico
