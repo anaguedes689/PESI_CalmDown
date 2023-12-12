@@ -89,14 +89,14 @@ public class MainActivity extends DashBoardActivity {
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnStats = findViewById(R.id.btnStats);
-        //stressbar = findViewById(R.id.stressbar);
-        //StressLevel = findViewById(R.id.StressLevel);
+        stressbar = findViewById(R.id.stressbar);
+        StressLevel = findViewById(R.id.StressLevel);
 
         double rmssd = getRMSSD(rr);
         float stress = (float) (-1.12359*rmssd + 117.8);
 
-       // stressbar.setProgress(Math.round(stress));
-       // StressLevel.setText(String.valueOf(stress));
+        stressbar.setProgress((int) stress);
+        StressLevel.setText(String.valueOf(stress));
 
 
     /*
@@ -152,13 +152,13 @@ public class MainActivity extends DashBoardActivity {
 
     public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
         double RMSSD = 0;
-        if(rr.size()>0){
+        if(rr!=null){
             double diff = 0;
             for (int i = 0; i < (rr.size()); i++) {
                 diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
             }
             RMSSD = Math.sqrt((diff/(rr.size()-1)));
-        }
+        }else{return 0;}
         return RMSSD;}
 
     public String ReccuperatejacketId() {
