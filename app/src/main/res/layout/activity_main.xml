@@ -51,33 +51,6 @@
                     android:background="@drawable/button_shadow"
                     android:text="Stats" />
 
-                <TextView
-                    android:id="@+id/StressLevelTextView"
-                    android:layout_width="201dp"
-                    android:layout_height="70dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="0dp"
-                    android:background="@drawable/rounded_edittext"
-                    android:elegantTextHeight="true"
-                    android:text="Stress Level"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/StressLevel"
-                    android:layout_width="200dp"
-                    android:layout_height="30dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="0dp"
-                    android:background="@drawable/rounded_edittext"
-                    android:elegantTextHeight="true"
-                    android:textAlignment="center"
-                    android:textColor="@color/text_color"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
-
 
                 <LinearLayout
                     android:layout_width="349dp"
@@ -103,7 +76,6 @@
                         android:background="@drawable/rounded_edittext"
                         android:elegantTextHeight="true"
                         android:text="Last Stress Level"
-                        android:textAlignment="center"
                         android:textColor="@color/text_color"
                         android:textSize="20sp"
                         android:textStyle="bold" />
