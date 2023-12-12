@@ -20,6 +20,7 @@
             android:textSize="22sp"
             android:gravity="center"
             android:textStyle="bold"
+            android:textColor="@color/text_color"
             android:text="Stress level now" />
 
         <TextView
@@ -28,6 +29,7 @@
             android:layout_height="46dp"
             android:textSize="20sp"
             android:gravity="center"
+            android:textColor="@color/text_color"
             android:text="TextView" />
 
     </LinearLayout>
