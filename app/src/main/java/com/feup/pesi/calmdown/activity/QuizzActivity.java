@@ -101,7 +101,6 @@ public class QuizzActivity extends DashBoardActivity {
             public void onClick(View v) {
                 selectedColor = Color.parseColor("#FF643A");
                 colorOption1.setBackgroundColor(selectedColor);
-                resetColorAfterDelay(colorOption1);
                 // Outras operações ou lógica que desejares realizar
             }
         });
@@ -110,8 +109,7 @@ public class QuizzActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 selectedColor = Color.parseColor("#FFACDF");
-                colorOption2.setBackgroundColor(selectedColor);
-                resetColorAfterDelay(colorOption2);
+                colorOption2.setBackgroundResource(R.drawable.selected_image_border);
             }
         });
 
@@ -119,8 +117,7 @@ public class QuizzActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 selectedColor = Color.parseColor("#4FDAC1");
-                colorOption3.setBackgroundColor(selectedColor);
-                resetColorAfterDelay(colorOption3);
+                colorOption3.setBackgroundResource(R.drawable.selected_image_border);
             }
         });
 
@@ -128,8 +125,7 @@ public class QuizzActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 selectedColor = Color.parseColor("#3CA9BC");
-                colorOption4.setBackgroundColor(selectedColor);
-                resetColorAfterDelay(colorOption4);
+                colorOption4.setBackgroundResource(R.drawable.selected_image_border);
             }
         });
 
@@ -184,16 +180,6 @@ public class QuizzActivity extends DashBoardActivity {
 
             }
         });
-    }
-
-    private void resetColorAfterDelay(final ImageView imageView) {
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                imageView.setBackgroundColor(Color.TRANSPARENT); // Muda de volta para a cor original (transparente)
-            }
-        }, 1000); // Tempo em milissegundos para voltar à cor original, neste caso, 1 segundo
     }
 
     private void addQuizzToUserDocument(String quizz, String userID) {
