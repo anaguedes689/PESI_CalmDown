@@ -5,13 +5,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_weight="0.69" >
-
-
-
 
 
         <TextView
@@ -22,9 +20,6 @@
             android:layout_below="@id/buttonSearch"
             android:layout_marginTop="16dp"/>
 
-
-
-
         <Button
             android:id="@+id/buttonSearch"
             style="?android:attr/buttonStyleSmall"
@@ -32,6 +27,26 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:text="Search" />
+
+        <RelativeLayout
+            android:id="@+id/page_intro_ek1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/buttonDisconnect"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="0dp"
+            android:gravity="center"
+
+            >
+
+            <ImageView
+                android:id="@+id/jacket"
+                android:layout_width="209dp"
+                android:layout_height="356dp"
+                android:contentDescription="logo2"
+                android:src="@drawable/ic_jacket" />
+
+        </RelativeLayout>
 
 
         <com.google.android.material.bottomnavigation.BottomNavigationView

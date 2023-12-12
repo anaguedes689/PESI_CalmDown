@@ -66,10 +66,15 @@
                     android:textStyle="bold" />
 
                 <ProgressBar
-                    android:id="@+id/stressbar"
-                    android:layout_width="match_parent"
-                    android:layout_height="207dp" />
-
+                    android:id="@+id/circularProgressBar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:indeterminate="false"
+                    android:progress="18"
+                    android:progressDrawable="@drawable/circular_progress_drawable"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="16dp"/>
                 <TextView
                     android:id="@+id/StressLevel"
                     android:layout_width="200dp"
@@ -93,8 +98,8 @@
 
                     <Button
                         android:id="@+id/btnStress"
-                        android:layout_width="150dp"
-                        android:layout_height="130dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="121dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/button_shadow"
                         android:text="Stress Level" />

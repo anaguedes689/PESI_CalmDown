@@ -66,6 +66,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     // Import the Firebase BoM
     implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.mikhaellopez:circularprogressbar:3.1.0")
 
 
     // TODO: Add the dependencies for Firebase products you want to use

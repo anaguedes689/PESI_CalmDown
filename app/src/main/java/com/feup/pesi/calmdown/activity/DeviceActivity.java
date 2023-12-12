@@ -13,6 +13,7 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ public class DeviceActivity extends DashBoardActivity {
     private String jacketId;
     private FirebaseFirestore db;
     private TextView textBatteryLevel;
+    private ImageView imageView;
 
 
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +64,7 @@ public class DeviceActivity extends DashBoardActivity {
 
         if (isCon) {
             obterDadosDaFirebasePeloIdDocumento(jacketId);
+            imageView = findViewById(R.id.jacket);
         }
         buttonSearch = (Button) findViewById(R.id.buttonSearch);
         buttonSearch.setOnClickListener(new View.OnClickListener() {
@@ -123,26 +126,6 @@ public class DeviceActivity extends DashBoardActivity {
 
 
     };
-    /*private void Connect() {
-        try {
-            deviceToConnect = lib.mBluetoothAdapter.getRemoteDevice(address);
-            lib.Connect(address, 5);
-            Log.d("connect device sucess: ", address);
-
-        } catch (Exception e) {
-            Log.d("Error to connect device: ", address);
-            e.printStackTrace();
-            showToast("Falha na conexão. Verifique o dispositivo e tente novamente.");
-        }
-    }
-
-    private void Disconnect() {
-        try {
-            lib.Disconnect();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
     public void obterDadosDaFirebasePeloIdDocumento(String idDocumento) {
         db.collection("jacketdata")
                 .document(idDocumento)
@@ -188,8 +171,4 @@ public class DeviceActivity extends DashBoardActivity {
         runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
     }
 
-    /*public String Reccuperateadress() {
-        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        return preferences.getString("selectedValue", "");
-    }*/
 }

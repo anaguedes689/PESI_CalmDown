@@ -1,45 +1,36 @@
 package com.feup.pesi.calmdown;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import android.animation.ValueAnimator;
+import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-
 import com.feup.pesi.calmdown.activity.DashBoardActivity;
 import com.feup.pesi.calmdown.activity.HrActivity;
 import com.feup.pesi.calmdown.activity.StatsActivity;
-import com.feup.pesi.calmdown.activity.StressActivity;
 import com.feup.pesi.calmdown.service.BluetoothService;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
+
 
 public class MainActivity extends DashBoardActivity {
 
@@ -47,21 +38,24 @@ public class MainActivity extends DashBoardActivity {
     private ProgressBar stressbar;
     private float stressLevel;
     private TextView stressTextView;
-
-    private TextView userNameTextView; // Assuming you have a TextView to display the user name
-    private TextView StressLevel;
+    private TextView userNameTextView;
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private String address = "";
     private Handler handler;
     private static final int UPDATE_INTERVAL = 60 * 1000;
+    private boolean isFirstRun = true;
+    private ProgressBar circularProgressBar;
+
+    float maxStressLevel = 100.0f;
 
     private String jacketDocumentId;
     private String selectedVariable;
-
+    //View circularView;
     private ArrayList<Long> rr;
     private Date selectedDate = new Date();
     private BluetoothService bluetoothService;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +66,10 @@ public class MainActivity extends DashBoardActivity {
         startService(serviceIntent);
         Intent intent = new Intent(this, BluetoothService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
+        handler = new Handler();
+
+        //circularView = findViewById(R.id.circularView);
+        circularProgressBar = findViewById(R.id.circularProgressBar);
 
         // Check if the user is logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -83,13 +81,31 @@ public class MainActivity extends DashBoardActivity {
             return;
         }
 
-        startUpdatingStressLevel();
+        if (isFirstRun) {
+            // Adia a execução de startUpdatingStressLevel() por 1 minuto
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    startUpdatingStressLevel();
+                }
+            }, UPDATE_INTERVAL);
+
+            isFirstRun = false;  // Define a flag para false após o atraso inicial
+        } else {
+            // Se não for a primeira execução, inicia imediatamente
+            startUpdatingStressLevel();
+        }
+
+
+       // circularProgressBar = findViewById(R.id.circularProgressBar);
+
         setContentView(R.layout.activity_main);
+
 
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnStats = findViewById(R.id.btnStats);
-        stressbar = findViewById(R.id.stressbar);
+        //stressbar = findViewById(R.id.stressbar);
 
         stressTextView = findViewById(R.id.StressLevel);
         stressLevel = ReccuperateStress();
@@ -123,6 +139,11 @@ public class MainActivity extends DashBoardActivity {
         SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
         return preferences.getString("selectedValue", "");
     }
+    private void updateCircularProgressBar(float stressLevel) {
+        // Atualiza o progresso do círculo com animação
+        circularProgressBar.setProgress(Math.round(stressLevel));
+
+    }
 
     private void startUpdatingStressLevel() {
         handler.postDelayed(new Runnable() {
@@ -131,7 +152,13 @@ public class MainActivity extends DashBoardActivity {
                 // Atualiza o stress level
                 stressLevel = ReccuperateStress();
                 stressTextView.setText(String.valueOf(stressLevel));
+                //updateCircularProgressBar(stressLevel);
+                float percentageFilled = stressLevel / maxStressLevel;
+                int fullWidth = getResources().getDimensionPixelSize(R.dimen.circular_view_full_width);
+                int filledWidth = (int) (fullWidth * percentageFilled);
 
+                int progress = Math.round(((int)stressLevel / maxStressLevel) * 100);
+                circularProgressBar.setProgress(progress);
                 // Agende a próxima atualização após 1 minuto
                 handler.postDelayed(this, UPDATE_INTERVAL);
             }
