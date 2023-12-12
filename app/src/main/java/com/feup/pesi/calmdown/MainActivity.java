@@ -35,7 +35,6 @@ import java.util.Date;
 public class MainActivity extends DashBoardActivity {
 
     private Button btnStress, btnStats;
-    private ProgressBar stressbar;
     private float stressLevel;
     private TextView stressTextView;
     private TextView userNameTextView;
@@ -67,9 +66,8 @@ public class MainActivity extends DashBoardActivity {
         Intent intent = new Intent(this, BluetoothService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
         handler = new Handler();
+        setContentView(R.layout.activity_main);
 
-        //circularView = findViewById(R.id.circularView);
-        circularProgressBar = findViewById(R.id.circularProgressBar);
 
         // Check if the user is logged in
         FirebaseUser currentUser = mAuth.getCurrentUser();
@@ -99,7 +97,8 @@ public class MainActivity extends DashBoardActivity {
 
        // circularProgressBar = findViewById(R.id.circularProgressBar);
 
-        setContentView(R.layout.activity_main);
+
+        circularProgressBar = findViewById(R.id.circularProgressBar);
 
 
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
