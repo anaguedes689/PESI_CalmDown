@@ -55,11 +55,9 @@ public class HrActivity extends DashBoardActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private LineChart lineChart;
-    private String jacketDocumentId;
     private TextView hrvString;
     private TextView imcString;
 
-    private VelocimeterView  velocimeterView;
     private int height;
     private int weight;
     private int age;
@@ -71,7 +69,8 @@ public class HrActivity extends DashBoardActivity {
 
     private String userSex;
 
-    private String selectedVariable = "pulse";
+    private String selectedVariable = "rr";
+    private String jacketDocumentId;
     private Date selectedDate = new Date();
 
     //private ArrayList<Integer> rr;
@@ -86,20 +85,17 @@ public class HrActivity extends DashBoardActivity {
         lineChart = findViewById(R.id.lineChart1);
 
         jacketDocumentId = ReccuperatejacketId();
+        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
+
 
         // Get the user ID of the logged user
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             loggedUserId = currentUser.getUid();
         }
-        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
 
         hrvString.setText(String.valueOf(getSDNN()));
 
-        ValueAnimator animator = ValueAnimator.ofFloat((float) getSDNN(), 200);
-        animator.setDuration(500);
-
-        animator.start();
         ImageButton btnUpdateChart = findViewById(R.id.btnUpdateChart);
         btnUpdateChart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,23 +105,6 @@ public class HrActivity extends DashBoardActivity {
             }
         });
 
-    }
-
-    private void animateVelocimeter(double hrvValue) {
-        // Animate the VelocimeterView based on the HRV value
-        ValueAnimator animator = ValueAnimator.ofFloat(velocimeterView.getCurrentValue(), (float) hrvValue);
-        animator.setDuration(1000); // Adjust duration as needed
-
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float animatedValue = (float) animation.getAnimatedValue();
-                // Update your custom view with the animated value
-                velocimeterView.setCurrentValue(animatedValue);
-            }
-        });
-
-        animator.start();
     }
 
     private void loadAndDisplayUserData(String userId) {
@@ -189,20 +168,6 @@ public class HrActivity extends DashBoardActivity {
         SDNN = Math.sqrt((diff/(rr.size()-1)));
         return SDNN;}
 
-    public String getInstantStress(){ //diferença atual e média
-        // A high-risk group may be selected by the dichotomy limits of SDNN <50 ms
-        ArrayList<Long> rr = this.rr;
-        String stress = new String("Normal");
-        double SDNN= getSDNN();
-
-        if((50-16)<SDNN){
-            stress = "Stress levels high!";
-            if (SDNN<32){
-                stress = "Stress levels EXTREMELY high!";
-            }
-        }
-
-        return stress;}
 
     public double getPNN50(){ //percentagem de intervalos seguidos com diferença maior que 50ms
         ArrayList<Long> rr = this.rr;
@@ -216,6 +181,7 @@ public class HrActivity extends DashBoardActivity {
         }
         PNN50 = PNN50*100/(rr.size()-1);
         return PNN50;}
+
     public double getRMSSD(){ //diferença entre atual e anterior
         ArrayList<Long> rr = this.rr;
         double RMSSD = 0;
@@ -228,98 +194,36 @@ public class HrActivity extends DashBoardActivity {
         }
         return RMSSD;}
 
-    public String getStatus(User user){
-        String status = new String("Normal");
-        String sex = user.getSex();
-        int age = user.getAge();
-
-        return status;}
-
-    /*private void getStress(){
-        if(this.rr.get(this.rr.size()-1)<NormalValues10Sec()){
-            System.out.printf("STRESSED");
-        }
-    }*/
-
-    private void NormalValues10Sec(){
-        //SDNN: 24.1±16.4
-        //RMSSD: 27.3±22.2
-        // https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5010946/
-    }
-
-    private void NormalValues5min(){
-        //SDNN: 141+-39 ms
-        //SDANN: 127+-35 ms
-        //RMSSD: 27+- 12ms -> WELLTORY: 19 – 48 ms — healthy adults in the age group of 38 – 42 years
-        //35 – 107 ms — elite athletes
-
-        /*Freq Domain:
-        tp: 3466+-1018 ms^2
-        LF: 1170+-416 ms^2
-        HF:975+-203 ms^2
-        LF/HF: 1.5-2-0
-
-        LOW HRV MORTALITY:
-        rmssd<15ms
-        pnn50:<0.75%
-        SDNN<50ms
-         */
-        String newage = Integer.toString(this.age);
-        char idad = 0;
-        double SDNN = 0;
-        double RMSSD = 0;
-        double PNN50 =0 ;
-        if(newage.length()>1){ //valores normais de 10 em 10 anos
-            idad = newage.charAt(0);
-            if(idad>=6){
-                idad = 6;
+    public List<Float> defineInterval(){
+        String sex = this.userSex;
+        double up, down;
+        float imc = (float) getIMC(this.height,this.weight);
+        up = 20;
+        down = 89;
+        List<Float> value = null;
+        if(imc>24.9 ||imc<18.5){
+            //nao saudaveis
+            up = 22;
+            down = 79;
+            if(sex.equals("Male")){
+                up = 23;
+                down = 72;
             }
+
         }else{
-            idad = '0';
-        }
-        int idade = Character.getNumericValue(idad);
-        if(this.userSex.equals('f')){
-            switch (idade){
-                case(3):
-                    SDNN = 138;
-                    PNN50 = 13;
-                case(4):
-                    SDNN = 129;
-                    PNN50 = 9;
-                case(5):
-                    SDNN = 135;
-                    PNN50 = 5;
-                case(6):
-                    SDNN = 115;
-                    PNN50 = 5;
-                default:
-                    SDNN = 188;
-                    PNN50 = 23;
-
+            //saudaveis
+            up = 48;
+            down = 13;
+            if(sex.equals("Male")){
+                up = 82;
+                down = 53.5;
             }
         }
-        if(this.userSex.equals('m')){
-            switch (idade){
-                case(3):
-                    SDNN = 165;
-                    PNN50 = 13;
-                case(4):
-                    SDNN = 155;
-                    PNN50 = 8;
-                case(5):
-                    SDNN = 152;
-                    PNN50 = 7;
-                case(6):
-                    SDNN = 140;
-                    PNN50 = 7;
-                default:
-                    SDNN = 188;
-                    PNN50 = 23;
-            }
-        }
-    }
+        value.add((float) up);
+        value.add((float) down);
+    return value;}
 
-    private void filterData(Date selectedDate, String selectedVariable, ArrayList<Date> dateTimeSpan, ArrayList<Long> data, String label) {
+    private void filterData(Date selectedDate, ArrayList<Date> dateTimeSpan, ArrayList<Long> data, String label) {
         List<Entry> entries = new ArrayList<>();
 
         boolean dataFound = false;
@@ -331,8 +235,6 @@ public class HrActivity extends DashBoardActivity {
                 // Adicione outras verificações de tipo conforme necessário para outros tipos de dados
             }
         }
-
-
 
         // Configuração do eixo X
         XAxis xAxis = lineChart.getXAxis();
@@ -527,7 +429,7 @@ public class HrActivity extends DashBoardActivity {
                                 }
                                 if (selectedVariable.equalsIgnoreCase(rr1)) {
                                     ArrayList<Long> rr = (ArrayList<Long>) document.get("rr");
-                                    //filterData(selectedDate, selectedVariable, dateTimeSpan, rr, "RR");
+                                    filterData(selectedDate, dateTimeSpan, rr, "RR");
 
                                 }
 
