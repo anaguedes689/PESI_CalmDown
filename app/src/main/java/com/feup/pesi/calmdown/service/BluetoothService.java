@@ -413,18 +413,8 @@ public class BluetoothService extends Service {
             // Utiliza a função slice para obter as últimas 5 posições
             rr = rrint.subList(rrint.size() - 5, rrint.size());
             // A high-risk group may be selected by the dichotomy limits of SDNN <50 ms
+
             String stress = new String("Normal");
-            /*double SDNN = 0;
-            float sum = 0;
-            for (int i = 0; i < rr.size(); i++) {
-                sum = sum + (rr.get(i));  // Convertendo Long para int e, em seguida, para float
-            }
-            float media = sum / (rr.size() + 1);
-            double diff = 0;
-            for (int i = 0; i < rr.size(); i++) {
-                diff = diff + Math.pow((double) rr.get(i) - media, 2);
-            }
-            SDNN = Math.sqrt((diff / (rr.size() - 1)));*/
             double rmssd = getRMSSD(rr);
             setLevelStress(rmssd);
             float up, down;
