@@ -54,7 +54,7 @@ public class MainActivity extends DashBoardActivity {
     private ArrayList<Long> rr;
     private Date selectedDate = new Date();
     private BluetoothService bluetoothService;
-    private VelocimeterView velocimeterView;
+    //private VelocimeterView velocimeterView;
 
 
     @Override
@@ -96,15 +96,17 @@ public class MainActivity extends DashBoardActivity {
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnStats = findViewById(R.id.btnStats);
-        velocimeterView = findViewById(R.id.velocimeterView);
+
+
+        //velocimeterView = findViewById(R.id.velocimeterView);
 
         //velocimetro
         //obter dados firebase - feito
         //calcular rmssd
-        double rmssd = getRMSSD(rr);
+        //double rmssd = getRMSSD(rr);
         //fazer escala instantanea
-        float stress = (float) (-1.12359*rmssd + 117.8);
-        velocimeterView.setCurrentValue(stress);
+        //float stress = (float) (-1.12359*rmssd + 117.8);
+        //velocimeterView.setCurrentValue(stress);
         //traduzir escalar para o velocimetro
 
 
@@ -112,7 +114,7 @@ public class MainActivity extends DashBoardActivity {
             @Override
             public void onClick(View v) {
                 // Abrir StressActivity
-                Intent intent = new Intent(MainActivity.this, HrActivity.class);
+                Intent intent = new Intent(MainActivity.this, StressActivity.class);
                 startActivity(intent);
             }
         });
@@ -246,7 +248,7 @@ public class MainActivity extends DashBoardActivity {
     }
 
 
-    public class VelocimeterView extends View {
+   /* public class VelocimeterView extends View {
         private Paint dialPaint;
         private Paint needlePaint;
         private Paint textPaint;
@@ -323,5 +325,5 @@ public class MainActivity extends DashBoardActivity {
         public float getCurrentValue() {
             return currentValue;
         }
-    }
+    }*/
 }

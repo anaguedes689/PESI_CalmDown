@@ -60,13 +60,6 @@ public class User {
     }
 
 
-    public ArrayList<Date> getDateTimeTimeSpan() {
-        return dateTimeTimeSpan;
-    }
-
-    public void setDateTimeTimeSpan(ArrayList<Date> dateTimeTimeSpan) {
-        this.dateTimeTimeSpan = dateTimeTimeSpan;
-    }
 
     public String getName() {
         return name;
@@ -123,7 +116,6 @@ public class User {
     public void setQuizz(String quizz) {
         this.quizz = quizz;
     }
-
 
 
 }
