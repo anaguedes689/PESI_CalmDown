@@ -9,7 +9,8 @@
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:layout_weight="0.69" >
+        android:layout_weight="0.69"
+        android:gravity="center">
 
 
         <TextView
@@ -18,7 +19,11 @@
             android:layout_height="wrap_content"
             android:text=""
             android:layout_below="@id/buttonSearch"
-            android:layout_marginTop="16dp"/>
+            android:layout_marginTop="50dp"
+            android:textAlignment="center"
+            android:textColor="@color/text_color"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/buttonSearch"

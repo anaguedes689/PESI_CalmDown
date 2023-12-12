@@ -33,6 +33,30 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/relax" />
 
+            <Button
+                android:id="@+id/btnStats"
+                android:layout_width="350dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="200dp"
+                android:layout_marginLeft="35dp"
+                android:background="@drawable/button_shadow"
+                android:text="Stats" />
+
+            <TextView
+                android:id="@+id/perc"
+                android:layout_width="200dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="455dp"
+                android:layout_marginLeft="105dp"
+                android:elegantTextHeight="true"
+                android:textAlignment="center"
+                android:textColor="@color/text_color"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:text="%"/>
+
             <LinearLayout
                 android:layout_width="800dp"
                 android:layout_height="600dp"
@@ -41,15 +65,6 @@
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="16dp">
-
-                <Button
-                    android:id="@+id/btnStats"
-                    android:layout_width="350dp"
-                    android:layout_height="123dp"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="-22dp"
-                    android:background="@drawable/button_shadow"
-                    android:text="Stats" />
 
                 <TextView
                     android:id="@+id/StressLevelTextView"
@@ -71,10 +86,9 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:indeterminate="false"
-                    android:progress="18"
                     android:progressDrawable="@drawable/circular_progress_drawable"
                     android:layout_gravity="center"
-                    android:layout_marginTop="16dp"/>
+                    android:layout_marginTop="16dp" />
                 <TextView
                     android:id="@+id/StressLevel"
                     android:layout_width="200dp"
@@ -88,35 +102,20 @@
                     android:textSize="20sp"
                     android:textStyle="bold" />
 
-
                 <LinearLayout
                     android:layout_width="349dp"
-                    android:layout_height="178dp"
-                    android:layout_marginTop="20dp"
-                    android:orientation="horizontal">
+                    android:layout_height="100dp"
+                    android:orientation="horizontal"
+                    android:gravity="center">
 
 
                     <Button
                         android:id="@+id/btnStress"
                         android:layout_width="wrap_content"
-                        android:layout_height="121dp"
-                        android:layout_marginTop="5dp"
+                        android:layout_height="60dp"
                         android:background="@drawable/button_shadow"
                         android:text="Stress Level" />
 
-                    <TextView
-                        android:id="@+id/lastStressLevelTextView"
-                        android:layout_width="200dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="top"
-                        android:layout_marginStart="0dp"
-                        android:background="@drawable/rounded_edittext"
-                        android:elegantTextHeight="true"
-                        android:text="Last Stress Level"
-                        android:textAlignment="center"
-                        android:textColor="@color/text_color"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
 
                 </LinearLayout>
 

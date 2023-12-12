@@ -64,7 +64,7 @@ public class HrActivity extends DashBoardActivity {
 
     private String userSex;
 
-    private String selectedVariable = "rr";
+    private final String selectedVariable = "rr";
     private String jacketDocumentId;
     private Date selectedDate = new Date();
 
@@ -79,7 +79,7 @@ public class HrActivity extends DashBoardActivity {
         lineChart = findViewById(R.id.lineChart1);
 
         jacketDocumentId = ReccuperatejacketId();
-        selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
+        //selectedVariable = getResources().getStringArray(R.array.variable_options)[0].toLowerCase(); // Pega o primeiro item
 
 
         // Get the user ID of the logged user
@@ -104,7 +104,7 @@ public class HrActivity extends DashBoardActivity {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 // Atualiza a variável selecionada
-                selectedVariable = getResources().getStringArray(R.array.history_options)[position].toLowerCase();
+                feature = getResources().getStringArray(R.array.history_options)[position].toLowerCase();
                 // Atualiza o gráfico com base nas novas escolhas do usuário
                 updateChart();
             }
@@ -200,7 +200,7 @@ public class HrActivity extends DashBoardActivity {
         double RMSSD = 0;
 
         if(rr!=null){
-            for(int i =0;i<rr.size();i++){
+            for(int i =0;i<(rr.size()-1);i++){
                 diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
             }
             RMSSD = Math.sqrt((diff/(rr.size()-1)));
@@ -246,15 +246,19 @@ public class HrActivity extends DashBoardActivity {
 
         // Group data into 5-minute intervals
         for (int i = 0; i < dateTimeSpan.size(); i++) {
-            long timeInMillis = dateTimeSpan.get(i).getTime();
-            long intervalKey = timeInMillis / intervalSize * intervalSize;
+            if (isSameDate(dateTimeSpan.get(i), selectedDate) && selectedVariable.equals(label.toLowerCase())) {
+                long timeInMillis = dateTimeSpan.get(i).getTime();
+                long intervalKey = timeInMillis / intervalSize * intervalSize;
 
-            if (!aggregatedDataMap.containsKey(intervalKey)) {
-                aggregatedDataMap.put(intervalKey, new ArrayList<>());
+                if (!aggregatedDataMap.containsKey(intervalKey)) {
+                    aggregatedDataMap.put(intervalKey, new ArrayList<>());
+                }
+
+                aggregatedDataMap.get(intervalKey).add(data.get(i));
             }
 
-            aggregatedDataMap.get(intervalKey).add(data.get(i));
         }
+
 
         // Calculate aggregated values for each 5-minute interval
         for (Map.Entry<Long, List<Long>> entry : aggregatedDataMap.entrySet()) {
@@ -265,6 +269,11 @@ public class HrActivity extends DashBoardActivity {
 
             // Add the aggregated value to the entries list
             entries.add(new Entry(intervalKey, (float) aggregatedValue));
+        }
+        if (entries.isEmpty()) {
+            // Adicione algum tratamento de erro ou imprima uma mensagem de log
+
+            return;
         }
 
         // Configuração do eixo X
@@ -417,6 +426,7 @@ public class HrActivity extends DashBoardActivity {
             });
         }
     }
+    /*
 
     public class VelocimeterView extends View {
         private Paint dialPaint;
@@ -495,7 +505,7 @@ public class HrActivity extends DashBoardActivity {
         public float getCurrentValue() {
             return currentValue;
         }
-    }
+    }*/
 
 
 

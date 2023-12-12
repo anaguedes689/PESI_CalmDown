@@ -429,12 +429,11 @@ public class BluetoothService extends Service {
 
             String stress = new String("Normal");
             double rmssd = getRMSSD(rr);
-            setLevelStress(rmssd);
             float up, down;
             up=89;down=20;
 
             float sstress = (float) (-0.89*rmssd +117.8); //em percentagem, geral
-
+            setLevelStress(sstress);
             if (sstress>70) {
                 stress = "Stress levels high!";
                 if (sstress> 85) {

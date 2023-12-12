@@ -17,4 +17,8 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
+    <color name="lowStressColor">#00FF00</color>
+    <color name="mediumStressColor">#FFFF00</color>
+    <color name="highStressColor">#FF0000</color>
+
 </resources>

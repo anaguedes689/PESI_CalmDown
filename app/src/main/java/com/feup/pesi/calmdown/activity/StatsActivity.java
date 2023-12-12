@@ -161,6 +161,10 @@ public class StatsActivity extends DashBoardActivity {
                 // Adicione outras verificações de tipo conforme necessário para outros tipos de dados
             }
         }
+        if (entries.isEmpty()) {
+            // Adicione algum tratamento de erro ou imprima uma mensagem de log
+            return;
+        }
 
 
 

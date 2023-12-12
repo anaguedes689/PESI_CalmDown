@@ -79,6 +79,13 @@ public class MainActivity extends DashBoardActivity {
             return;
         }
 
+        stressTextView = findViewById(R.id.StressLevel);
+        stressLevel = ReccuperateStress();
+        stressTextView.setText(String.valueOf(stressLevel));
+
+        circularProgressBar = findViewById(R.id.circularProgressBar);
+        circularProgressBar.setProgress((int) stressLevel);
+
         if (isFirstRun) {
             // Adia a execução de startUpdatingStressLevel() por 1 minuto
             handler.postDelayed(new Runnable() {
@@ -98,17 +105,13 @@ public class MainActivity extends DashBoardActivity {
        // circularProgressBar = findViewById(R.id.circularProgressBar);
 
 
-        circularProgressBar = findViewById(R.id.circularProgressBar);
-
 
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnStats = findViewById(R.id.btnStats);
         //stressbar = findViewById(R.id.stressbar);
 
-        stressTextView = findViewById(R.id.StressLevel);
-        stressLevel = ReccuperateStress();
-        stressTextView.setText(String.valueOf(stressLevel));
+
 
         btnStress.setOnClickListener(new View.OnClickListener() {
             @Override
