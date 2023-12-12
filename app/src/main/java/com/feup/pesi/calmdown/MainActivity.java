@@ -89,13 +89,13 @@ public class MainActivity extends DashBoardActivity {
         userNameTextView = findViewById(R.id.textViewName); // Replace with your actual TextView ID
         btnStress = findViewById(R.id.btnStress);
         btnStats = findViewById(R.id.btnStats);
-        stressbar = findViewById(R.id.stressbar);
+        //stressbar = findViewById(R.id.stressbar);
         StressLevel = findViewById(R.id.StressLevel);
 
         double rmssd = getRMSSD(rr);
         float stress = (float) (-1.12359*rmssd + 117.8);
 
-        stressbar.setProgress(Math.round(stress));
+       // stressbar.setProgress(Math.round(stress));
         StressLevel.setText(String.valueOf(stress));
 
 
