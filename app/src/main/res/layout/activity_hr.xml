@@ -44,18 +44,11 @@
         android:layout_marginTop="16dp"
         android:layout_marginStart="16dp">
 
-        <CheckBox
-            android:id="@+id/edit_stress"
-            android:layout_width="wrap_content"
+        <Spinner
+            android:id="@+id/spinner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Stress" />
-
-        <CheckBox
-            android:id="@+id/edit_rmssd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RMSSD" />
+            android:layout_marginBottom="8dp"/>
 
     </LinearLayout>
 

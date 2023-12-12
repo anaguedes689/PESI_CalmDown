@@ -2,14 +2,15 @@ package com.feup.pesi.calmdown.activity;
 
 import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
 
-import android.animation.ValueAnimator;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.AdapterView;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.Context;
@@ -21,7 +22,6 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 
 import com.feup.pesi.calmdown.R;
-import com.feup.pesi.calmdown.model.User;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.AxisBase;
 import com.github.mikephil.charting.components.XAxis;
@@ -54,16 +54,13 @@ public class HrActivity extends DashBoardActivity {
     //visualizar nivel stress
     //emitir notificação que vai à respiration activity
 
-    private String loggedUserId;
-    private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private LineChart lineChart;
 
     private int height;
     private int weight;
 
-    private CheckBox edit_stress;
-    private CheckBox edit_rmssd;
+    private String feature= "STRESS";
 
     private String userSex;
 
@@ -71,14 +68,13 @@ public class HrActivity extends DashBoardActivity {
     private String jacketDocumentId;
     private Date selectedDate = new Date();
 
-    //private ArrayList<Integer> rr;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hr);
         db = FirebaseFirestore.getInstance();
 
-        mAuth = FirebaseAuth.getInstance();
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
         lineChart = findViewById(R.id.lineChart1);
 
@@ -89,7 +85,7 @@ public class HrActivity extends DashBoardActivity {
         // Get the user ID of the logged user
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
-            loggedUserId = currentUser.getUid();
+            String loggedUserId = currentUser.getUid();
         }
 
         ImageButton btnUpdateChart = findViewById(R.id.btnUpdateChart);
@@ -98,8 +94,29 @@ public class HrActivity extends DashBoardActivity {
             public void onClick(View v) {
                 // Chama o método para obter dados da Firebase novamente
                 obterDadosDaFirebasePeloIdDocumento(jacketDocumentId, selectedDate);
+                updateChart();
             }
         });
+
+        // Configura o ouvinte de seleção de variável
+        Spinner spinnerVariable = findViewById(R.id.spinner);
+        spinnerVariable.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                // Atualiza a variável selecionada
+                selectedVariable = getResources().getStringArray(R.array.history_options)[position].toLowerCase();
+                // Atualiza o gráfico com base nas novas escolhas do usuário
+                updateChart();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+                // Nada a fazer aqui
+            }
+        });
+
+        // Atualiza o gráfico com base nas escolhas iniciais do usuário
+        updateChart();
 
     }
 
@@ -278,7 +295,7 @@ public class HrActivity extends DashBoardActivity {
     }
 
     private double calculateAggregatedValue(List<Long> intervalData) {
-        String feature = getSelectedFeature();
+        String feature = this.feature;
         double sum = 0;
         double rmssd = getRMSSD(intervalData);
         if(feature.equals("RMSSD")){
@@ -364,15 +381,6 @@ public class HrActivity extends DashBoardActivity {
         }
     }
 
-    private String getSelectedFeature() {
-        if (edit_stress.isChecked()) {
-            return "Male";
-        } else if (edit_rmssd.isChecked()) {
-            return "Female";
-        } else {
-            return ""; // You may want to handle this case based on your app's requirements
-        }
-    }
 
     public String ReccuperatejacketId() {
         SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
