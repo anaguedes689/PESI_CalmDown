@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layoutDatePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -32,13 +32,38 @@
             android:datePickerMode="spinner"
             android:spinnersShown="true"
             android:visibility="gone" />
-    </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layoutCheckboxes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@id/layoutDatePicker"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp">
+
+        <CheckBox
+            android:id="@+id/edit_stress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:text="Stress" />
+
+        <CheckBox
+            android:id="@+id/edit_rmssd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RMSSD" />
+
+    </LinearLayout>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart1"
         android:layout_width="match_parent"
         android:layout_height="505dp"
-        android:layout_below="@id/layoutDatePicker"
+        android:layout_below="@id/layoutCheckboxes"
         android:layout_marginTop="16dp"
         android:background="#EFEFEF" />
 

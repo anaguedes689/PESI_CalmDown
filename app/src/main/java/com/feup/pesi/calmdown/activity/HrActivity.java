@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -42,8 +43,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class HrActivity extends DashBoardActivity {
 
@@ -55,17 +58,12 @@ public class HrActivity extends DashBoardActivity {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
     private LineChart lineChart;
-    private TextView hrvString;
-    private TextView imcString;
 
     private int height;
     private int weight;
-    private int age;
 
-   private ArrayList<Long> pulse;
-    private ArrayList<Long> rr;
-    private ArrayList<Long> bpm;
-    private ArrayList<Long> bpmi;
+    private CheckBox edit_stress;
+    private CheckBox edit_rmssd;
 
     private String userSex;
 
@@ -94,8 +92,6 @@ public class HrActivity extends DashBoardActivity {
             loggedUserId = currentUser.getUid();
         }
 
-        hrvString.setText(String.valueOf(getSDNN()));
-
         ImageButton btnUpdateChart = findViewById(R.id.btnUpdateChart);
         btnUpdateChart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,14 +112,12 @@ public class HrActivity extends DashBoardActivity {
                     userSex = document.getString("sex");
                     // Retrieve the timestamp
                     Timestamp timestamp = document.getTimestamp("birthdaydate");
-                    Date userBirthday = timestamp != null ? timestamp.toDate() : null; age = calculateAge(userBirthday);
+                    Date userBirthday = timestamp != null ? timestamp.toDate() : null; int age = calculateAge(userBirthday);
 
                     height = document.getLong("height").intValue();
                     weight = document.getLong("weight").intValue();
 
                     double imc = getIMC(height,weight);
-
-                    imcString.setText(String.valueOf(imc));
 
                 }
             }
@@ -151,47 +145,50 @@ public class HrActivity extends DashBoardActivity {
         imc = w*w/h;
     return imc;}
 
-    public double getSDNN(){ //diferença atual e média
-        // A high-risk group may be selected by the dichotomy limits of SDNN <50 ms
-        ArrayList<Long> rr = this.rr;
-        String stress = new String("Normal");
-        double SDNN= 0;
-        Float sum = (float) 0;
-        for (int i = 0; i < this.rr.size(); i++) {
-            sum = sum + rr.get(i);
+    public void getHistory(String feature, String window){
+        List<Float> History = null;
+        Date selectedDate = new Date();
+        Date begin = null;
+
+
+
+        if(window.equals("24H")){
+            begin = calculateOneDayBefore(selectedDate);
+
         }
-        float media = sum/(rr.size()+1);
+        if(window.equals("5min")){
+            begin = calculateFiveMinutesBefore(selectedDate);
+        }
+
+    }
+
+    private static Date calculateOneDayBefore(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.DAY_OF_MONTH, -1); // Subtract one day
+        return calendar.getTime();
+    }
+
+    private static Date calculateFiveMinutesBefore(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.MINUTE, -5); // Subtract 5 minutes
+        return calendar.getTime();
+    }
+
+    public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
+
+        List<Long> NewRR = null;
         double diff = 0;
-        for (int i = 0; i < this.rr.size(); i++) {
-            diff = diff + Math.pow((double) rr.get(i) - media, 2);
-        }
-        SDNN = Math.sqrt((diff/(rr.size()-1)));
-        return SDNN;}
-
-
-    public double getPNN50(){ //percentagem de intervalos seguidos com diferença maior que 50ms
-        ArrayList<Long> rr = this.rr;
-        double PNN50 = 0;
-        if(rr.size()>0){
-            for (int i = 0; i < rr.size(); i++) {
-                if ((rr.get(i+1) - rr.get(i)) > 50) {
-                    PNN50 += 1;
-                }
-            }
-        }
-        PNN50 = PNN50*100/(rr.size()-1);
-        return PNN50;}
-
-    public double getRMSSD(){ //diferença entre atual e anterior
-        ArrayList<Long> rr = this.rr;
         double RMSSD = 0;
-        if(rr.size()>0){
-            double diff = 0;
-            for (int i = 0; i < (rr.size()); i++) {
-                diff = diff + Math.pow((double) rr.get(i+1) - rr.get(i), 2);
+
+        if(rr!=null){
+            for(int i =0;i<rr.size();i++){
+                diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
             }
             RMSSD = Math.sqrt((diff/(rr.size()-1)));
         }
+
         return RMSSD;}
 
     public List<Float> defineInterval(){
@@ -223,6 +220,80 @@ public class HrActivity extends DashBoardActivity {
         value.add((float) down);
     return value;}
 
+    private void filterData(Date selectedDate, ArrayList<Date> dateTimeSpan, ArrayList<Long> data, String label) {
+        List<Entry> entries = new ArrayList<>();
+        int intervalSize = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        // Map to store aggregated data for each 5-minute interval
+        Map<Long, List<Long>> aggregatedDataMap = new HashMap<>();
+
+        // Group data into 5-minute intervals
+        for (int i = 0; i < dateTimeSpan.size(); i++) {
+            long timeInMillis = dateTimeSpan.get(i).getTime();
+            long intervalKey = timeInMillis / intervalSize * intervalSize;
+
+            if (!aggregatedDataMap.containsKey(intervalKey)) {
+                aggregatedDataMap.put(intervalKey, new ArrayList<>());
+            }
+
+            aggregatedDataMap.get(intervalKey).add(data.get(i));
+        }
+
+        // Calculate aggregated values for each 5-minute interval
+        for (Map.Entry<Long, List<Long>> entry : aggregatedDataMap.entrySet()) {
+            long intervalKey = entry.getKey();
+            List<Long> intervalData = entry.getValue();
+
+            double aggregatedValue = calculateAggregatedValue(intervalData);
+
+            // Add the aggregated value to the entries list
+            entries.add(new Entry(intervalKey, (float) aggregatedValue));
+        }
+
+        // Configuração do eixo X
+        XAxis xAxis = lineChart.getXAxis();
+        xAxis.setValueFormatter(new DateValueFormatter());
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        xAxis.setLabelRotationAngle(45f);
+
+        // Configuração do eixo Y
+        YAxis yAxis = lineChart.getAxisLeft();
+
+        // Configuração dos dados do gráfico
+        lineChart.getDescription().setText(label);
+        lineChart.getDescription().setTextSize(16f);
+        lineChart.getLegend().setEnabled(false);
+
+        // Criação do conjunto de dados
+        LineDataSet dataSet = new LineDataSet(entries, label);
+        dataSet.setMode(LineDataSet.Mode.CUBIC_BEZIER);
+        dataSet.setCubicIntensity(0.2f);
+        dataSet.setLineWidth(2f);
+
+        // Adiciona o conjunto de dados ao gráfico
+        lineChart.setData(new LineData(dataSet));
+
+        // Atualiza o gráfico
+        lineChart.invalidate();
+    }
+
+    private double calculateAggregatedValue(List<Long> intervalData) {
+        String feature = getSelectedFeature();
+        double sum = 0;
+        double rmssd = getRMSSD(intervalData);
+        if(feature.equals("RMSSD")){
+            sum = rmssd;
+        }
+        if(feature.equals("Stress")){
+            List<Float> intervalo = defineInterval();
+            double amplitude =(double) (intervalo.get(1) -intervalo.get(0));
+            sum = (100/(intervalo.get(0)-intervalo.get(1)))*(rmssd)+(100-(100*rmssd/(intervalo.get(0)-intervalo.get(1))));
+
+        }
+        return sum;
+    }
+
+/*
     private void filterData(Date selectedDate, ArrayList<Date> dateTimeSpan, ArrayList<Long> data, String label) {
         List<Entry> entries = new ArrayList<>();
 
@@ -267,7 +338,7 @@ public class HrActivity extends DashBoardActivity {
         }
     }
 
-
+*/
 
     private void showToast(String message) {
         // Método para exibir um Toast com a mensagem fornecida
@@ -290,6 +361,16 @@ public class HrActivity extends DashBoardActivity {
             // Converte o valor do eixo X (tempo em milissegundos) de volta para uma data formatada
             SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.getDefault());
             return dateFormat.format(new Date((long) value));
+        }
+    }
+
+    private String getSelectedFeature() {
+        if (edit_stress.isChecked()) {
+            return "Male";
+        } else if (edit_rmssd.isChecked()) {
+            return "Female";
+        } else {
+            return ""; // You may want to handle this case based on your app's requirements
         }
     }
 
@@ -407,6 +488,8 @@ public class HrActivity extends DashBoardActivity {
             return currentValue;
         }
     }
+
+
 
 
 
