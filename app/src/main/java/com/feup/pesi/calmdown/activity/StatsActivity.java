@@ -44,7 +44,7 @@ public class StatsActivity extends DashBoardActivity {
     private LineChart lineChart;
     private String jacketDocumentId;
     private String selectedVariable = "pulse";
-    private Date selectedDate = new Date(); // Inicializa com a data atual
+    private Date selectedDate = Calendar.getInstance().getTime();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -100,7 +100,7 @@ public class StatsActivity extends DashBoardActivity {
     }
 
     public void obterDadosDaFirebasePeloIdDocumento(String idDocumento, Date selectedDate, String selectedVariable) {
-        db.collection("jacket")
+        db.collection("jacketdata")
                 .document(idDocumento)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
@@ -170,6 +170,9 @@ public class StatsActivity extends DashBoardActivity {
 
         // Configuração do eixo Y
         YAxis yAxis = lineChart.getAxisLeft();
+// Configuração da escala e do intervalo
+        yAxis.setGranularity(60 * 60); // Configura o intervalo em segundos (aqui, 1 hora)
+        yAxis.setValueFormatter(new HourAxisValueFormatter()); // Define o formatador de valores para exibir em horas
 
         // Configuração dos dados do gráfico
         lineChart.getDescription().setText(label);
@@ -182,6 +185,8 @@ public class StatsActivity extends DashBoardActivity {
         dataSet.setCubicIntensity(0.2f);
         dataSet.setLineWidth(2f);
 
+        dataSet.setDrawValues(false);
+
         // Adiciona o conjunto de dados ao gráfico
         lineChart.setData(new LineData(dataSet));
 
@@ -190,6 +195,17 @@ public class StatsActivity extends DashBoardActivity {
 
         if (!dataFound) {
             showToast("No data for that date");
+        }
+    }
+
+    public class HourAxisValueFormatter extends ValueFormatter {
+        @Override
+        public String getFormattedValue(float value) {
+            // Converte o valor do eixo Y (em segundos) para o formato de hora
+            long seconds = (long) value;
+            long hours = seconds / 3600;
+            long minutes = (seconds % 3600) / 60;
+            return String.format("%02d:%02d", hours, minutes);
         }
     }
 

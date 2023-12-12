@@ -97,28 +97,28 @@ public class QuizzActivity extends DashBoardActivity {
         colorOption1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedColor = Color.parseColor("#bfdbd5");
+                selectedColor = Color.parseColor("#FF643A");
             }
         });
 
         colorOption2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedColor = Color.parseColor("#d2b3b3");
+                selectedColor = Color.parseColor("#FFACDF");
             }
         });
 
         colorOption3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedColor = Color.parseColor("#bcd2b0");
+                selectedColor = Color.parseColor("#4FDAC1");
             }
         });
 
         colorOption4.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                selectedColor = Color.parseColor("#dfdfdf");
+                selectedColor = Color.parseColor("#3CA9BC");
             }
         });
 
@@ -161,6 +161,7 @@ public class QuizzActivity extends DashBoardActivity {
                     String userID = currentUser.getUid();
                     quizz = new Quizz(userID, stressLevel, relaxPreference, colorToHexString(selectedColor), notificationPreference);
                 }
+
 
                 addQuizzToGlobalCollection(quizz);
 
