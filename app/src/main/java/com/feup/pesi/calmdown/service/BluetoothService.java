@@ -1,7 +1,5 @@
 package com.feup.pesi.calmdown.service;
 
-import static androidx.constraintlayout.helper.widget.MotionEffect.TAG;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -19,9 +17,9 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
@@ -29,25 +27,13 @@ import androidx.core.app.NotificationManagerCompat;
 import com.feup.pesi.calmdown.R;
 import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.model.Jacket;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
+import com.feup.pesi.calmdown.model.LocalData;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import Bio.Library.namespace.BioLib;
 
@@ -76,12 +62,15 @@ public class BluetoothService extends Service {
     private String accConf = "";
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
-    private String currentUserId;
+
+    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+    private String currentUserId = preferences.getString("userId", "");
+
     private boolean isServiceRunning;
     private Jacket jacket;
-    private final int INTERVALO_EXECUCAO = 1 * 60 * 1000; // 2 minuto em milissegundos
+    private final int INTERVALO_EXECUCAO = 500; // 1 minuto em milissegundos
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final int COLLECTION_INTERVAL = 1 * 60 * 1000;  // 2 minutos em milissegundos
+    private final int COLLECTION_INTERVAL = 500;  // 1 minutos em milissegundos
     private final ArrayList<Integer> accumulatedPulse = new ArrayList<>();
     private final ArrayList<Integer> accumulatedBattery = new ArrayList<>();
     private final ArrayList<Long> accumulatedPosition = new ArrayList<>();
@@ -98,6 +87,7 @@ public class BluetoothService extends Service {
     List<Integer> existingBpm;
     List<Integer> existingNleads;
     List<Integer> existingNbytes;
+
 
 
     private long lastCollectionTime;
@@ -133,7 +123,8 @@ public class BluetoothService extends Service {
         @Override
         public void run() {
             handler.postDelayed(this, INTERVALO_EXECUCAO);
-            updateArrays(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
+            addToLocalData(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
+            //updateArrays(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
             DATETIME_TIMESPAN = new Date();
             long currentTime = System.currentTimeMillis();
 
@@ -306,106 +297,31 @@ public class BluetoothService extends Service {
         accumulatedNbytes.add(nbytes);
     }
 
-    private void inserirDadosNoFirebase(Jacket jacket) {
-        mAuth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
-        String macAddress = address;
+    private void addToLocalData(int pulse, int battery, long pos, int rr, int bpmi, int bpm, int nleads, int nbytes) {
 
-        if (macAddress != null) {
-            Log.d("BluetoothService", macAddress);
+        JacketDataDbAdapter localDataDbAdapter = new JacketDataDbAdapter(context);
+        localDataDbAdapter.open();
+
+        LocalData localDataTemp = new LocalData();
+        localDataTemp.setBatteryLevel(battery);
+        localDataTemp.setPulse(pulse);
+        localDataTemp.setPosition(pos);
+        localDataTemp.setRr(rr);
+        localDataTemp.setBpmi(bpmi);
+        localDataTemp.setBpm(bpm);
+        localDataTemp.setNleads(nleads);
+        localDataTemp.setBytes(nbytes);
+        localDataTemp.setDateTimeSpan(DATETIME_TIMESPAN);
+        localDataTemp.setUserId(currentUserId);
+        localDataTemp.setAddress(address);
+
+        // You need to set the data accordingly
+        long insertResult = localDataDbAdapter.insertLocalData(localDataTemp);
+        if (insertResult != -1) {
+            Log.d("BluetoothService", "Dados inseridos na base de dados local");
         } else {
-            Log.d("BluetoothService", "not found");
+            Log.d("BluetoothService", "Erro ao inserir dados na base de dados local");
         }
-
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            currentUserId = currentUser.getUid();
-            jacket.setUserId(currentUserId);
-            jacket.setAddress(macAddress);
-        }
-
-        // Recupera todos os documentos da coleção
-        db.collection("jacketdata")
-                .whereEqualTo("address", macAddress)
-                .whereEqualTo("userId", currentUserId)
-                .get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                // Encontrou um documento existente
-                                existingDocumentId = document.getId();
-                                setExistingDocumentId(existingDocumentId);
-                                // Adiciona os novos valores médios às posições seguintes
-
-                                existingRr = (List<Integer>) document.get("rr");
-                                existingPulse = (List<Integer>) document.get("pulse");
-                                existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
-                                existingPosition = (List<Long>) document.get("position");
-                                existingBpmi = (List<Integer>) document.get("bpmi");
-                                existingBpm = (List<Integer>) document.get("bpm");
-                                existingNleads = (List<Integer>) document.get("nleads");
-                                existingNbytes = (List<Integer>) document.get("nBytes");
-                                List<Long>rr1 = (List<Long>) document.get("rr");
-
-                                // Adiciona os novos valores médios às posições seguintes, incluindo valores iguais
-                                existingRr.add(jacket.getRr().get(0));
-                                existingPulse.add(jacket.getPulse().get(0));
-                                existingBatteryLevel.add(jacket.getBatteryLevel().get(0));
-                                existingPosition.add(jacket.getPosition().get(0));
-                                existingBpmi.add(jacket.getBpmi().get(0));
-                                existingBpm.add(jacket.getBpm().get(0));
-                                existingNleads.add(jacket.getNleads().get(0));
-                                existingNbytes.add(jacket.getnBytes().get(0));
-
-                                getInstantStress(rr1);
-
-                                db.collection("jacketdata").document(document.getId())
-                                        .update(
-                                                "rr", existingRr,
-                                                "pulse", existingPulse,
-                                                "batteryLevel", existingBatteryLevel,
-                                                "position", existingPosition,
-                                                "bpmi", existingBpmi,
-                                                "bpm", existingBpm,
-                                                "nleads", existingNleads,
-                                                "nBytes", existingNbytes,
-                                                "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0))
-                                        )
-                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                Log.d(TAG, "Documento Jacket atualizado com sucesso!");
-                                            }
-                                        })
-                                        .addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.w(TAG, "Erro ao atualizar documento Jacket", e);
-                                            }
-                                        });
-                                return; // Termina a execução após encontrar o documento
-                            }
-                            // Se não encontrou um documento existente, adiciona um novo
-                            db.collection("jacketdata").add(jacket)
-                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                        @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            Log.d(TAG, "Documento Jacket adicionado com ID: " + documentReference.getId());
-                                        }
-                                    })
-                                    .addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.w(TAG, "Erro ao adicionar documento Jacket", e);
-                                        }
-                                    });
-                        } else {
-                            Log.w(TAG, "Erro ao obter documentos.", task.getException());
-                        }
-                    }
-                });
     }
 
     public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
@@ -502,8 +418,6 @@ public class BluetoothService extends Service {
     }
 
 
-
-
     private void setExistingDocumentId(String documentId){
         SharedPreferences sharedPreferences = getSharedPreferences("MyPreferences", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -528,38 +442,35 @@ public class BluetoothService extends Service {
     }
 
     private void calculateAndInsertToDatabase() {
+
+        // Insira os valores médios na base de dados
+        JacketDataDbAdapter jacketDataDbAdapter = new JacketDataDbAdapter(context);
+        jacketDataDbAdapter.open();
+
         // Calcule a média dos valores acumulados
         int averagePulse = calculateAverage(accumulatedPulse);
         int averageBattery = calculateAverage(accumulatedBattery);
         long averagePosition = calculateAverageLong(accumulatedPosition);
         int averageRr = calculateAverage(accumulatedRr);
-        int averagebpmi = calculateAverage(accumulatedBpmi);
-        int averagebpm = calculateAverage(accumulatedBpm);
+        int averageBpmi = calculateAverage(accumulatedBpmi);
+        int averageBpm = calculateAverage(accumulatedBpm);
         int averageNleads = calculateAverage(accumulatedNleads);
         int averageNbytes = calculateAverage(accumulatedNbytes);
 
-        // Atualize o objeto Jacket com os valores médios
-        jacket.setPulse(new ArrayList<>(Collections.singletonList(averagePulse)));
-        jacket.setBatteryLevel(new ArrayList<>(Collections.singletonList(averageBattery)));
-        jacket.setPosition(new ArrayList<>(Collections.singletonList(averagePosition)));
-        jacket.setRr(new ArrayList<>(Collections.singletonList(averageRr)));
-        jacket.setBpmi(new ArrayList<>(Collections.singletonList(averagebpmi)));
-        jacket.setBpm(new ArrayList<>(Collections.singletonList(averagebpm)));
-        jacket.setNleads(new ArrayList<>(Collections.singletonList(averageNleads)));
-        jacket.setnBytes(new ArrayList<>(Collections.singletonList(averageNbytes)));
-        jacket.setDateTimeSpan(new ArrayList<>(Collections.singletonList(DATETIME_TIMESPAN)));
+        // Get the current timestamp
+        long dateTime = System.currentTimeMillis();
 
-        // Insira na base de dados
-        inserirDadosNoFirebase(jacket);
-        Log.d("BluetoothService", "Dados inseridos");
-        // Limpar os arrays acumulados
-        accumulatedPulse.clear();
-        accumulatedBattery.clear();
-        accumulatedPosition.clear();
-        accumulatedRr.clear();
-        accumulatedBpmi.clear();
-        accumulatedBpm.clear();
-        accumulatedNleads.clear();
-        accumulatedNbytes.clear();
+
+        long insertResult = jacketDataDbAdapter.insertAverageData( averagePulse, averageBattery, averagePosition,
+                averageRr, averageBpmi, averageBpm, averageNleads,
+                averageNbytes, currentUserId, dateTime);
+        if (insertResult != -1) {
+            Log.d("BluetoothService", "Dados inseridos na base de dados local");
+        } else {
+            Log.d("BluetoothService", "Erro ao inserir dados na base de dados local");
+        }
+
+
+
     }
 }

@@ -3,6 +3,7 @@ package com.feup.pesi.calmdown;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,6 +77,8 @@ public class LoginActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                     FirebaseFirestore db = FirebaseFirestore.getInstance();
                                     String userId = user.getUid(); // Get the UID of the current user
+                                    editor.putString("userId", userId);
+                                    editor.apply();
                                     CollectionReference quizzesCollection = db.collection("quizzes"); // Assuming the collection name is "quizzes"
                                     quizzesCollection.whereEqualTo("userId", userId).get().addOnCompleteListener(task1 -> {
                                         if (task1.isSuccessful()) {

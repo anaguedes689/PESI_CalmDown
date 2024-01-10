@@ -1,6 +1,5 @@
-package com.feup.pesi.calmdown.service;
+/*package com.feup.pesi.calmdown.service;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,16 +16,14 @@ import androidx.core.app.JobIntentService;
 
 import com.feup.pesi.calmdown.JacketDatabaseHelper;
 import com.feup.pesi.calmdown.model.Jacket;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.feup.pesi.calmdown.model.LocalData;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 
 public class SyncService extends JobIntentService {
@@ -62,7 +59,7 @@ public class SyncService extends JobIntentService {
 
 
     public Jacket retrieveData() throws ParseException {
-        JacketDatabaseHelper dbHelper = new JacketDatabaseHelper(this);
+        JacketDataDBHelper dbHelper = new JacketDatabaseHelper(this);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
 
         ArrayList<Integer> nleadsUnsynced = new ArrayList<>();
@@ -186,3 +183,4 @@ public class SyncService extends JobIntentService {
 
 }
 
+*/

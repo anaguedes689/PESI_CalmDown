@@ -1,41 +1,76 @@
 package com.feup.pesi.calmdown.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class LocalData {
+    private int nleads;
+    private long position;
+    private int rr;
+    private int bpmi;
+    private int bpm;
+    private Date dateTimeSpan;
+    private int bytes;
     private String address;
     private int batteryLevel;
-    private int bpm;
-    private int bpmi;
-    private int nBytes;
-    private int nleads;
-    private int position;
     private int pulse;
-    private int rr;
-    private Date dateTimeSpan;
     private String userId;
 
-    // Constructors, getters, and setters
 
+    public LocalData() {
+    }
 
-    public LocalData(String address, int batteryLevel, int bpm, int bpmi, int nBytes, int nleads, int position, int pulse, int rr, Date dateTimeSpan, String userId) {
-        this.address = address;
-        this.batteryLevel = batteryLevel;
-        this.bpm = bpm;
-        this.bpmi = bpmi;
-        this.nBytes = nBytes;
+    public LocalData(int nleads, long position, int rr, int bpmi, int bpm, Date dateTimeSpan, int bytes, String address, int batteryLevel, int pulse, String userId) {
         this.nleads = nleads;
         this.position = position;
-        this.pulse = pulse;
         this.rr = rr;
+        this.bpmi = bpmi;
+        this.bpm = bpm;
         this.dateTimeSpan = dateTimeSpan;
+        this.bytes = bytes;
+        this.address = address;
+        this.batteryLevel = batteryLevel;
+        this.pulse = pulse;
         this.userId = userId;
     }
 
-    public LocalData() {
+    public int getNleads() {
+        return nleads;
+    }
 
+    public void setNleads(int nleads) {
+        this.nleads = nleads;
+    }
+
+    public long getPosition() {
+        return position;
+    }
+
+    public void setPosition(long position) {
+        this.position = position;
+    }
+
+    public int getRr() {
+        return rr;
+    }
+
+    public void setRr(int rr) {
+        this.rr = rr;
+    }
+
+    public int getBpmi() {
+        return bpmi;
+    }
+
+    public void setBpmi(int bpmi) {
+        this.bpmi = bpmi;
+    }
+
+    public int getBpm() {
+        return bpm;
+    }
+
+    public void setBpm(int bpm) {
+        this.bpm = bpm;
     }
 
     public Date getDateTimeSpan() {
@@ -44,6 +79,14 @@ public class LocalData {
 
     public void setDateTimeSpan(Date dateTimeSpan) {
         this.dateTimeSpan = dateTimeSpan;
+    }
+
+    public int getBytes() {
+        return bytes;
+    }
+
+    public void setBytes(int bytes) {
+        this.bytes = bytes;
     }
 
     public String getAddress() {
@@ -62,60 +105,12 @@ public class LocalData {
         this.batteryLevel = batteryLevel;
     }
 
-    public int getBpm() {
-        return bpm;
-    }
-
-    public void setBpm(int bpm) {
-        this.bpm = bpm;
-    }
-
-    public int getnBytes() {
-        return nBytes;
-    }
-
-    public void setnBytes(int nBytes) {
-        this.nBytes = nBytes;
-    }
-
-    public int getNleads() {
-        return nleads;
-    }
-
-    public void setNleads(int nleads) {
-        this.nleads = nleads;
-    }
-
-    public int getBpmi() {
-        return bpmi;
-    }
-
-    public void setBpmi(int bpmi) {
-        this.bpmi = bpmi;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
-    }
-
     public int getPulse() {
         return pulse;
     }
 
     public void setPulse(int pulse) {
         this.pulse = pulse;
-    }
-
-    public int getRr() {
-        return rr;
-    }
-
-    public void setRr(int rr) {
-        this.rr = rr;
     }
 
     public String getUserId() {
