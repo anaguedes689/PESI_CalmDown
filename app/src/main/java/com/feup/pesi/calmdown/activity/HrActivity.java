@@ -58,6 +58,8 @@ public class HrActivity extends DashBoardActivity {
     private LineChart lineChart;
 
     private int height;
+
+    private int age;
     private int weight;
 
     private String feature= "STRESS";
@@ -86,6 +88,7 @@ public class HrActivity extends DashBoardActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
             String loggedUserId = currentUser.getUid();
+            loadAndDisplayUserData(loggedUserId);
         }
 
         ImageButton btnUpdateChart = findViewById(R.id.btnUpdateChart);
@@ -129,7 +132,7 @@ public class HrActivity extends DashBoardActivity {
                     userSex = document.getString("sex");
                     // Retrieve the timestamp
                     Timestamp timestamp = document.getTimestamp("birthdaydate");
-                    Date userBirthday = timestamp != null ? timestamp.toDate() : null; int age = calculateAge(userBirthday);
+                    Date userBirthday = timestamp != null ? timestamp.toDate() : null; this.age = calculateAge(userBirthday);
 
                     height = document.getLong("height").intValue();
                     weight = document.getLong("weight").intValue();
@@ -173,7 +176,7 @@ public class HrActivity extends DashBoardActivity {
             begin = calculateOneDayBefore(selectedDate);
 
         }
-        if(window.equals("5min")){
+        if(window.equals("10min")){
             begin = calculateFiveMinutesBefore(selectedDate);
         }
 
@@ -187,15 +190,15 @@ public class HrActivity extends DashBoardActivity {
     }
 
     private static Date calculateFiveMinutesBefore(Date date) {
+        //mudar para 10 minutos
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.MINUTE, -5); // Subtract 5 minutes
+        calendar.add(Calendar.MINUTE, -10); // Subtract 5 minutes
         return calendar.getTime();
     }
 
     public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
 
-        List<Long> NewRR = null;
         double diff = 0;
         double RMSSD = 0;
 
@@ -209,30 +212,30 @@ public class HrActivity extends DashBoardActivity {
         return RMSSD;}
 
     public List<Float> defineInterval(){
+        //RMSSD para 10 minutos
         String sex = this.userSex;
+        int age = this.age;
         double up, down;
         float imc = (float) getIMC(this.height,this.weight);
-        up = 20;
+        up = 0;
         down = 89;
         List<Float> value = null;
-        if(imc>24.9 ||imc<18.5){
+        if(imc>30){
             //nao saudaveis
-            up = 22;
-            down = 79;
-            if(sex.equals("Male")){
-                up = 23;
-                down = 72;
-            }
-
+            down = 18;
         }else{
             //saudaveis
-            up = 48;
-            down = 13;
-            if(sex.equals("Male")){
-                up = 82;
-                down = 53.5;
+            if (age<34){
+                down = 40;
+            }else{
+                down = 27;
             }
         }
+        if(sex.equals("Male")){
+            up = 0;
+            down = down  + 0.08*down;
+        }
+
         value.add((float) up);
         value.add((float) down);
     return value;}
@@ -313,7 +316,10 @@ public class HrActivity extends DashBoardActivity {
         if(feature.equals("Stress")){
             List<Float> intervalo = defineInterval();
             double amplitude =(double) (intervalo.get(1) -intervalo.get(0));
-            sum = (100/(intervalo.get(0)-intervalo.get(1)))*(rmssd)+(100-(100*rmssd/(intervalo.get(0)-intervalo.get(1))));
+            if(rmssd<intervalo.get(1)){ //&& frequencia cardiaca>100
+                sum = 100-((rmssd)*100/amplitude);
+            }
+            //sum = (100/(intervalo.get(0)-intervalo.get(1)))*(rmssd)+(100-(100*rmssd/(intervalo.get(0)-intervalo.get(1))));
 
         }
         return sum;
