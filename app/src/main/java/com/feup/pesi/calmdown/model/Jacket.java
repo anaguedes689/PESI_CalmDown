@@ -141,29 +141,40 @@ public class Jacket {
         }
         return SDNN;}
 
-    public double getPNN50(){ //percentagem de intervalos seguidos com diferença maior que 50ms
+  /*  public double getPNN50() {
         ArrayList<Integer> rr = this.rr;
         double PNN50 = 0;
-        if(rr.size()>0){
-            for (int i = 0; i < rr.size(); i++) {
-                if ((rr.get(i+1) - rr.get(i)) > 50) {
+
+        if (rr != null && rr.size() > 1) { // Ensure there are at least two elements for calculations
+            for (int i = 0; i < (rr.size() - 1); i++) {
+                if ((rr.get(i + 1) - rr.get(i)) > 50) {
                     PNN50 += 1;
                 }
             }
+
+            PNN50 = PNN50 * 100 / (rr.size() - 1);
         }
-        PNN50 = PNN50*100/(rr.size()-1);
-        return PNN50;}
-    public double getRMSSD(){ //diferença entre atual e anterior
+
+        return PNN50;
+    }*/
+
+    /*public double getRMSSD() {
         ArrayList<Integer> rr = this.rr;
         double RMSSD = 0;
-        if(rr.size()>0){
+
+        if (rr != null && rr.size() > 1) { // Ensure there are at least two elements for calculations
             double diff = 0;
-            for (int i = 0; i < (rr.size()); i++) {
-                diff = diff + Math.pow((double) rr.get(i+1) - rr.get(i), 2);
+
+            for (int i = 0; i < (rr.size() - 1); i++) {
+                diff = diff + Math.pow((double) rr.get(i + 1) - rr.get(i), 2);
             }
-            RMSSD = Math.sqrt((diff/(rr.size()-1)));
+
+            RMSSD = Math.sqrt((diff / (rr.size() - 1)));
         }
-        return RMSSD;}
+
+        return RMSSD;
+    }
+*/
 
     public String getStatus(User user){
         String status = new String("Normal");

@@ -3,7 +3,6 @@ package com.feup.pesi.calmdown.activity;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.feup.pesi.calmdown.MainActivity;
 import com.feup.pesi.calmdown.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import androidx.appcompat.app.AppCompatActivity;

@@ -33,6 +33,7 @@ public class RespirationActivity extends DashBoardActivity {
 
         stressTextView = findViewById(R.id.textStress);
         stressLevel = ReccuperateStress();
+
         stressTextView.setText(String.valueOf(stressLevel));
 
         mAuth = FirebaseAuth.getInstance();
@@ -110,6 +111,7 @@ public class RespirationActivity extends DashBoardActivity {
             public void run() {
                 // Atualiza o stress level
                 stressLevel = ReccuperateStress();
+
                 stressTextView.setText(String.valueOf(stressLevel));
 
                 // Agende a próxima atualização após 1 minuto

@@ -1,4 +1,4 @@
-package com.feup.pesi.calmdown;
+package com.feup.pesi.calmdown.activity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -13,8 +13,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.feup.pesi.calmdown.R;
-import com.feup.pesi.calmdown.activity.QuizzActivity;
-import com.feup.pesi.calmdown.model.Quizz;
 import com.feup.pesi.calmdown.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;

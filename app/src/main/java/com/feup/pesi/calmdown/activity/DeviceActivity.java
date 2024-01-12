@@ -164,7 +164,7 @@ public class DeviceActivity extends DashBoardActivity {
     }
     public String ReccuperatejacketId() {
         SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
-        return preferences.getString("jacketDocumentId", "");
+        return preferences.getString("selectedValue", "");
     }
 
     private void showToast(String message) {

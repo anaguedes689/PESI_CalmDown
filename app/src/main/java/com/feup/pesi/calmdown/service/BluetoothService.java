@@ -1,5 +1,7 @@
 package com.feup.pesi.calmdown.service;
 
+import static androidx.fragment.app.FragmentManager.TAG;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
@@ -20,18 +22,30 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.feup.pesi.calmdown.LocalDataContract;
 import com.feup.pesi.calmdown.R;
 import com.feup.pesi.calmdown.activity.RespirationActivity;
 import com.feup.pesi.calmdown.model.Jacket;
 import com.feup.pesi.calmdown.model.LocalData;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +60,7 @@ public class BluetoothService extends Service {
     private boolean isConnected = false;
     public static final String DEVICE_NAME = "device_name";
     private String mConnectedDeviceName = "";
+    private String currentUserId = "";
     private Date DATETIME_RTC = null;
     private Date DATETIME_TIMESPAN = null;
     private BioLib.DataACC dataACC = null;
@@ -63,14 +78,11 @@ public class BluetoothService extends Service {
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
 
-    SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-    private String currentUserId = preferences.getString("userId", "");
-
     private boolean isServiceRunning;
     private Jacket jacket;
-    private final int INTERVALO_EXECUCAO = 500; // 1 minuto em milissegundos
+    private final int INTERVALO_EXECUCAO = 5000; // 5 segundos tempo que demora a recolher os dados
     private final Handler handler = new Handler(Looper.getMainLooper());
-    private final int COLLECTION_INTERVAL = 500;  // 1 minutos em milissegundos
+    private final int COLLECTION_INTERVAL = 1000*60;  // Calcula os valores médios e insere na base de dados a cada 1 minuto
     private final ArrayList<Integer> accumulatedPulse = new ArrayList<>();
     private final ArrayList<Integer> accumulatedBattery = new ArrayList<>();
     private final ArrayList<Long> accumulatedPosition = new ArrayList<>();
@@ -79,6 +91,7 @@ public class BluetoothService extends Service {
     private final ArrayList<Integer> accumulatedBpm = new ArrayList<>();
     private final ArrayList<Integer> accumulatedNleads = new ArrayList<>();
     private final ArrayList<Integer> accumulatedNbytes = new ArrayList<>();
+
     List<Integer> existingRr;
     List<Integer> existingPulse;
     List<Integer> existingBatteryLevel;
@@ -87,11 +100,17 @@ public class BluetoothService extends Service {
     List<Integer> existingBpm;
     List<Integer> existingNleads;
     List<Integer> existingNbytes;
-
-
-
     private long lastCollectionTime;
+
     String existingDocumentId;
+
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        SharedPreferences preferences = getSharedPreferences("MyPreferences", MODE_PRIVATE);
+        currentUserId = preferences.getString("userId", "");
+    }
 
     public class LocalBinder extends Binder {
         public BluetoothService getService() {
@@ -124,7 +143,9 @@ public class BluetoothService extends Service {
         public void run() {
             handler.postDelayed(this, INTERVALO_EXECUCAO);
             addToLocalData(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
-            //updateArrays(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
+
+            //Arrays temporarios para a média
+            updateArrays(pulse, battery, pos, rr, bpmi, bpm, nleads, nbytes);
             DATETIME_TIMESPAN = new Date();
             long currentTime = System.currentTimeMillis();
 
@@ -253,8 +274,8 @@ public class BluetoothService extends Service {
                 insertOut(out);
                 battery = out.battery;
                 pulse = out.pulse;
-                //Log.d("BluetoothService", "BAT: " + out.battery + " %");
-                //Log.d("BluetoothService", "HR: " + out.pulse + " bpm     Nb. Leads: " + lib.GetNumberOfChannels());
+                Log.d("BluetoothService", "BAT: " + out.battery + " %");
+                Log.d("BluetoothService", "HR: " + out.pulse + " bpm     Nb. Leads: " + lib.GetNumberOfChannels());
                 break;
 
             case BioLib.MESSAGE_PEAK_DETECTION:
@@ -298,9 +319,8 @@ public class BluetoothService extends Service {
     }
 
     private void addToLocalData(int pulse, int battery, long pos, int rr, int bpmi, int bpm, int nleads, int nbytes) {
-
-        JacketDataDbAdapter localDataDbAdapter = new JacketDataDbAdapter(context);
-        localDataDbAdapter.open();
+        JacketDataDbAdapter jacketDataDbAdapter = new JacketDataDbAdapter(this); // Make sure 'this' is a valid context
+        jacketDataDbAdapter.open();
 
         LocalData localDataTemp = new LocalData();
         localDataTemp.setBatteryLevel(battery);
@@ -316,12 +336,14 @@ public class BluetoothService extends Service {
         localDataTemp.setAddress(address);
 
         // You need to set the data accordingly
-        long insertResult = localDataDbAdapter.insertLocalData(localDataTemp);
+        long insertResult = jacketDataDbAdapter.insertLocalData(localDataTemp);
         if (insertResult != -1) {
             Log.d("BluetoothService", "Dados inseridos na base de dados local");
         } else {
             Log.d("BluetoothService", "Erro ao inserir dados na base de dados local");
         }
+
+        inserirDadosNoFirebase(jacket);
     }
 
     public double getRMSSD(List<Long> rr){ //diferença entre atual e anterior
@@ -430,7 +452,12 @@ public class BluetoothService extends Service {
         for (int value : values) {
             sum += value;
         }
-        return sum / values.size();
+        if (values.size() != 0) {
+            return sum / values.size();
+        } else {
+            // Handle the case where values.size() is zero, e.g., return a default value or throw an exception.
+            return 0; // You can replace 0 with a suitable default value or throw an exception.
+        }
     }
 
     private long calculateAverageLong(List<Long> values) {
@@ -438,7 +465,12 @@ public class BluetoothService extends Service {
         for (long value : values) {
             sum += value;
         }
-        return sum / values.size();
+        if (values.size() != 0) {
+            return sum / values.size();
+        } else {
+            // Handle the case where values.size() is zero, e.g., return a default value or throw an exception.
+            return 0; // You can replace 0 with a suitable default value or throw an exception.
+        }
     }
 
     private void calculateAndInsertToDatabase() {
@@ -457,6 +489,17 @@ public class BluetoothService extends Service {
         int averageNleads = calculateAverage(accumulatedNleads);
         int averageNbytes = calculateAverage(accumulatedNbytes);
 
+        // Atualize o objeto Jacket com os valores médios
+        jacket.setPulse(new ArrayList<>(Collections.singletonList(averagePulse)));
+        jacket.setBatteryLevel(new ArrayList<>(Collections.singletonList(averageBattery)));
+        jacket.setPosition(new ArrayList<>(Collections.singletonList(averagePosition)));
+        jacket.setRr(new ArrayList<>(Collections.singletonList(averageRr)));
+        jacket.setBpmi(new ArrayList<>(Collections.singletonList(averageBpmi)));
+        jacket.setBpm(new ArrayList<>(Collections.singletonList(averageBpm)));
+        jacket.setNleads(new ArrayList<>(Collections.singletonList(averageNleads)));
+        jacket.setnBytes(new ArrayList<>(Collections.singletonList(averageNbytes)));
+        jacket.setDateTimeSpan(new ArrayList<>(Collections.singletonList(DATETIME_TIMESPAN)));
+
         // Get the current timestamp
         long dateTime = System.currentTimeMillis();
 
@@ -470,7 +513,117 @@ public class BluetoothService extends Service {
             Log.d("BluetoothService", "Erro ao inserir dados na base de dados local");
         }
 
-
-
     }
+
+    private void inserirDadosNoFirebase(Jacket jacket) {
+        mAuth = FirebaseAuth.getInstance();
+        db = FirebaseFirestore.getInstance();
+        String macAddress = address;
+
+        if (macAddress != null) {
+            Log.d("BluetoothService", macAddress);
+        } else {
+            Log.d("BluetoothService", "not found");
+        }
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser != null) {
+            currentUserId = currentUser.getUid();
+            jacket.setUserId(currentUserId);
+            jacket.setAddress(macAddress);
+        }
+
+        // Recupera todos os documentos da coleção
+        db.collection("jacketdata")
+                .whereEqualTo("address", macAddress)
+                .whereEqualTo("userId", currentUserId)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @SuppressLint("RestrictedApi")
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                // Encontrou um documento existente
+                                existingDocumentId = document.getId();
+                                setExistingDocumentId(existingDocumentId);
+                                // Adiciona os novos valores médios às posições seguintes
+
+                                existingRr = (List<Integer>) document.get("rr");
+                                existingPulse = (List<Integer>) document.get("pulse");
+                                existingBatteryLevel = (List<Integer>) document.get("batteryLevel");
+                                existingPosition = (List<Long>) document.get("position");
+                                existingBpmi = (List<Integer>) document.get("bpmi");
+                                existingBpm = (List<Integer>) document.get("bpm");
+                                existingNleads = (List<Integer>) document.get("nleads");
+                                existingNbytes = (List<Integer>) document.get("nBytes");
+                                List<Long>rr1 = (List<Long>) document.get("rr");
+
+                                // Adiciona os novos valores médios às posições seguintes, incluindo valores iguais
+                                existingRr.add(jacket.getRr().get(0));
+                                existingPulse.add(jacket.getPulse().get(0));
+                                existingBatteryLevel.add(jacket.getBatteryLevel().get(0));
+                                existingPosition.add(jacket.getPosition().get(0));
+                                existingBpmi.add(jacket.getBpmi().get(0));
+                                existingBpm.add(jacket.getBpm().get(0));
+                                existingNleads.add(jacket.getNleads().get(0));
+                                existingNbytes.add(jacket.getnBytes().get(0));
+
+                                getInstantStress(rr1);
+
+                                db.collection("jacketdata").document(document.getId())
+                                        .update(
+                                                "rr", existingRr,
+                                                "pulse", existingPulse,
+                                                "batteryLevel", existingBatteryLevel,
+                                                "position", existingPosition,
+                                                "bpmi", existingBpmi,
+                                                "bpm", existingBpm,
+                                                "nleads", existingNleads,
+                                                "nBytes", existingNbytes,
+                                                "dateTimeSpan", FieldValue.arrayUnion(jacket.getDateTimeSpan().get(0))
+                                        )
+                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @SuppressLint("RestrictedApi")
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                Log.d(TAG, "Documento Jacket atualizado com sucesso!");
+                                            }
+                                        })
+                                        .addOnFailureListener(new OnFailureListener() {
+                                            @SuppressLint("RestrictedApi")
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.w(TAG, "Erro ao atualizar documento Jacket", e);
+                                            }
+                                        });
+                                return; // Termina a execução após encontrar o documento
+                            }
+                            // Se não encontrou um documento existente, adiciona um novo
+                            db.collection("jacketdata").add(jacket)
+                                    .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @SuppressLint("RestrictedApi")
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Log.d(TAG, "Documento Jacket adicionado com ID: " + documentReference.getId()+ "BPM:" + existingBpm );
+                                        }
+                                    })
+                                    .addOnFailureListener(new OnFailureListener() {
+                                        @SuppressLint("RestrictedApi")
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.w(TAG, "Erro ao adicionar documento Jacket", e);
+                                        }
+                                    });
+                        } else {
+                            Log.w(TAG, "Erro ao obter documentos.", task.getException());
+                        }
+                    }
+                });
+    }
+
+
+
+
+
 }

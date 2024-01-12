@@ -1,4 +1,4 @@
-package com.feup.pesi.calmdown;
+package com.feup.pesi.calmdown.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
+import com.feup.pesi.calmdown.R;
 import com.google.firebase.FirebaseApp;
 
 

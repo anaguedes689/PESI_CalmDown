@@ -27,7 +27,7 @@
             android:enabled="true"
             android:exported="false" />
         <activity
-            android:name=".IntroActivity"
+            android:name=".activity.IntroActivity"
             android:exported="true"
             android:label="@string/app_name">
             <intent-filter>
@@ -36,12 +36,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.feup.pesi.calmdown.MainActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.MainActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.HrActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.StressActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.UserActivity"/>
-        <activity android:name="com.feup.pesi.calmdown.LoginActivity"/>
-        <activity android:name="com.feup.pesi.calmdown.RegisterActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.LoginActivity"/>
+        <activity android:name="com.feup.pesi.calmdown.activity.RegisterActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.EditUserActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.QuizzActivity"/>
         <activity android:name="com.feup.pesi.calmdown.activity.RespirationActivity"/>

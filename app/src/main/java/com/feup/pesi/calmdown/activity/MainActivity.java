@@ -1,32 +1,26 @@
-package com.feup.pesi.calmdown;
+package com.feup.pesi.calmdown.activity;
 
 
-import android.animation.ObjectAnimator;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.feup.pesi.calmdown.activity.DashBoardActivity;
-import com.feup.pesi.calmdown.activity.HrActivity;
-import com.feup.pesi.calmdown.activity.StatsActivity;
+import com.feup.pesi.calmdown.R;
 import com.feup.pesi.calmdown.service.BluetoothService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.mikhaellopez.circularprogressbar.CircularProgressBar;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -81,9 +75,12 @@ public class MainActivity extends DashBoardActivity {
 
         stressTextView = findViewById(R.id.StressLevel);
         stressLevel = ReccuperateStress();
+
         stressTextView.setText(String.valueOf(stressLevel));
 
+
         circularProgressBar = findViewById(R.id.circularProgressBar);
+
         circularProgressBar.setProgress((int) stressLevel);
 
         if (isFirstRun) {
